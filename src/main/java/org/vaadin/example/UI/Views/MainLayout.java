@@ -24,7 +24,7 @@ public class MainLayout extends AppLayout {
 	}
 
 	private void createHeader() {
-		H1 logo = new H1("Vaadin Project 001");
+		H1 logo = new H1("Floor Plan V 1.0.0");
 
 		HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
 
