@@ -117,7 +117,8 @@ loadSmplrJs("umd")
 					break;
 				//   return [...points, action.point]
 				case 'update':
-					updatePoint(action)
+					updatePoint(action);
+					disablePick();
 					break;
 				// return points.map(pt =>
 				//     pt.id === action.id ? { ...pt, ...action.updates } : pt
@@ -190,12 +191,6 @@ loadSmplrJs("umd")
 
 		//////////////////////////////////
 
-
-
-
-
-
-
 		//Diable Pick Mode 
 		window.disablePick = () => {
 			space.disablePickingMode()
@@ -214,24 +209,55 @@ loadSmplrJs("umd")
 			updateDataLayers();
 		}
 
-
-
-
-
-
-
-		// Generate Id ==> It will be replaced by the UUID$ package
-		function generateSpecificID() {
-			const randomID = Math.floor(Math.random() * (1000 - 9999 + 1)) + 9999;
-			console.log(randomID);
-			return randomID;
+		function updatePoint(action) {
+			console.log("action" + JSON.stringify(action))
+			console.log("points: " + points);
+			for (let i = 0; i < points.length; i++) {
+				if (points[i].id === action.id) {
+					points[i].position = action.updates.position;
+					console.log(points);
+					return points;
+				}
+			}
+			return points;
 		}
+		const removePoint = () => {
+			let newPoints = points.filter(obj => obj.id !== tempPoint.id);
+			console.log("tempPoint " + tempPoint);
+			points = newPoints;
+			console.log("Point " + tempPoint.id + " was removed successfully");
 
-
-
-
-
-
+			// showPoints();
+			// addPointDataLayer();
+			callOnClick();
+			// return points;
+		}
+		
+		
+		window.clickPoint = ()=>{
+			callOnClick();
+		}
 
 		/////////////
 	});
+
+
+// Generate Id ==> It will be replaced by the UUID$ package
+function generateSpecificID() {
+	const randomID = Math.floor(Math.random() * (1000 - 9999 + 1)) + 9999;
+	console.log(randomID);
+	return randomID;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
