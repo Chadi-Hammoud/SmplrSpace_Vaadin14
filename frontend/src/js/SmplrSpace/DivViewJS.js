@@ -16,22 +16,30 @@ loadSmplrJs("umd")
 			containerId: "container",
 		});
 
-		space.startViewer({
-			preview: true,
-			loadingMessage: "Hello From Mobinets Workspace",
-			mode: '3d',
-			allowModeChange: true,
-			// onModeChange: ( '2d'),
-			onReady: () => {
-				console.log("===> View IS READY");
-				console.log("===>Calling UpdateDataLayers()");
-				updateDataLayers();
-				callOnClick();
-				console.log("===>After calling UpdateDataLayers()");
-			},
-			onError: (error) => console.error("Could not start viewer", error)
+		const startView = () =>
+			space.startViewer({
+				preview: true,
+				loadingMessage: "Hello From Mobinets Workspace",
+				mode: '3d',
+				allowModeChange: true,
+				// onModeChange: ( '2d'),
+				onReady: () => {
+					console.log("===> View IS READY");
+					console.log("===>Calling UpdateDataLayers()");
+					updateDataLayers();
+					callOnClick();
+					console.log("===>After calling UpdateDataLayers()");
+				},
+				onError: (error) => console.error("Could not start viewer", error)
 
-		});
+			});
+			
+			startView();
+			
+			
+			window.runView = ()=>{
+				startView();
+			}
 
 
 		/////////////////////////////////////////////
@@ -232,11 +240,16 @@ loadSmplrJs("umd")
 			callOnClick();
 			// return points;
 		}
-		
-		
-		window.clickPoint = ()=>{
+
+
+		window.clickPoint = () => {
 			callOnClick();
 		}
+
+		window.stopViewr = () => {
+			space.remove();
+		}
+
 
 		/////////////
 	});

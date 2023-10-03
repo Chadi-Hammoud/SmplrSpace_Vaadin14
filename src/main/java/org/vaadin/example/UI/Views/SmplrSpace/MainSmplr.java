@@ -24,6 +24,8 @@ public class MainSmplr extends VerticalLayout {
 		DivView spaceView = new DivView();
 		spaceView.getStyle().set("width", "100%");
 		spaceView.getStyle().set("height", "100%");
+		
+		
 		Button remove = new Button("Remove Dep Layer");
 		remove.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 		remove.addClickListener(event -> {
@@ -65,9 +67,23 @@ public class MainSmplr extends VerticalLayout {
 			Page page = UI.getCurrent().getPage();
 			page.executeJs("clickPoint();");
 		});
+		
+		Button stopViewr = new Button("Stop View");
+		stopViewr.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		stopViewr.addClickListener(event -> {
+			Page page = UI.getCurrent().getPage();
+			page.executeJs("stopViewr();");
+		});
+	
+		Button runView = new Button("Run View");
+		runView.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+		runView.addClickListener(event -> {
+			Page page = UI.getCurrent().getPage();
+			page.executeJs("runView();");
+		});
 
 		HorizontalLayout horizontalView = new HorizontalLayout();
-		horizontalView.add(remove, draw, addPoint, disablePickMode, showPoints, selectPoint);
+		horizontalView.add(remove, draw, addPoint, disablePickMode, showPoints, selectPoint,stopViewr,runView);
 		add(spaceView, horizontalView);
 
 	}
