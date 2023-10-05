@@ -39,8 +39,9 @@ class SmplrSpaceContainer extends PolymerElement {
 		var element = this;
 		while (element.parentNode && (element = element.parentNode)) {
 			if (element instanceof ShadowRoot) {
-				console.error("This element does not support shadow roots. Please use a <slot> for the element instead.", element);
+				console.error("This element does not support shadow roots. Please use a <slot> for the element instead.", element);			
 			}
+			
 		}
 	}
 
@@ -50,36 +51,7 @@ class SmplrSpaceContainer extends PolymerElement {
 	ready() {
 		super.ready();
 
-		this.loadSmplrJs = loadSmplrJs("umd")
-			.then((smplr) => {
-				/* enjoy a fully typed API and auto-completion */
-				const space = new smplr.Space({
-					spaceId: "b6e6acf9-1524-4f2b-a257-c6edd64832e0",
-					clientToken: "pub_fc4b7f5e33bd49cf98912c56c404de8c",
-					containerId: "container",
-				});
-
-				const startView = () =>
-					space.startViewer({
-						preview: true,
-						loadingMessage: "Hello From Mobinets Workspace",
-						mode: '3d',
-						allowModeChange: true,
-						// onModeChange: ( '2d'),
-						onReady: () => {
-							console.log("===> View IS READY");
-							console.log("===>Calling UpdateDataLayers()");
-							updateDataLayers();
-							callOnClick();
-							console.log("===>After calling UpdateDataLayers()");
-						},
-						onError: (error) => console.error("Could not start viewer", error)
-
-					});
-
-				startView();
-
-			});
+		
 	}
 
 }

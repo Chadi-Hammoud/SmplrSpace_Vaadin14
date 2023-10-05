@@ -2,6 +2,7 @@
   "dependencies": {
     "@babel/core": "^7.17.10",
     "@polymer/iron-icon": "3.0.1",
+    "@polymer/iron-icons": "^3.0.1",
     "@polymer/iron-list": "3.1.0",
     "@polymer/polymer": "^3.2.0",
     "@smplrspace/smplr-loader": "^2.9.0",
@@ -140,7 +141,8 @@
       "@webcomponents/webcomponentsjs": "^2.2.10",
       "construct-style-sheets-polyfill": "3.0.4",
       "lit-element": "2.4.0",
-      "lit-html": "1.4.1"
+      "lit-html": "1.4.1",
+      "@smplrspace/smplr-loader": "2.9.0"
     },
     "devDependencies": {
       "@types/node": "18.14.0",
@@ -164,6 +166,6 @@
       "webpack-dev-server": "3.11.0",
       "webpack-merge": "4.2.2"
     },
-    "hash": "faec63cf2fa449f3089bf9a91a882db74d9eba7c5d5ea14f15abb9a13bec7f5c"
+    "hash": "5a278781e05ec05dab3e162042d4b32ce4a88702140929fa562d74eac0fa6f92"
   }
 }
