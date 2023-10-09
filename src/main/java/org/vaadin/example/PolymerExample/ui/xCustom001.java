@@ -6,13 +6,14 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
 
-@Tag("icon-index")
+@Tag("demo-element")
 
-@Route(value = "Poly001")
+
+@Route("Poly001")
 
 //@JsModule("./src/js/PolymerExample/xCustom001.js")
-//@JsModule("./src/js/PolymerExample/demo-element.js")
-@JsModule("./src/js/PolymerExample/index.js")
+@JsModule("./src/js/PolymerExample/demo-element.js")
+//@JsModule("./src/js/PolymerExample/index.js")
 
 public class xCustom001 extends PolymerTemplate<TemplateModel> {
 

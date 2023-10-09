@@ -1,6 +1,6 @@
 package org.vaadin.example.UI.Views.SmplrSpace;
 
-import org.vaadin.example.UI.Views.MainLayout;
+//import org.vaadin.example.UI.Views.MainLayout;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
@@ -17,7 +17,7 @@ import com.vaadin.flow.component.notification.Notification;
 
 import com.vaadin.flow.router.Route;
 
-@Route(value = "", layout = MainLayout.class)
+//@Route(value = "", layout = MainLayout.class)
 public class MainSmplr extends VerticalLayout {
 
 	public MainSmplr() {
