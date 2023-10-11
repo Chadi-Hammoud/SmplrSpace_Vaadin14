@@ -1,10 +1,10 @@
-import { loadSmplrJs } from "@smplrspace/smplr-loader";
-import { Desk, Servers, AC, Departments } from './data001.js';
-
-
-let points = [];
-
-
+//import { loadSmplrJs } from "@smplrspace/smplr-loader";
+//import { Desk, Servers, AC, Departments } from './data001.js';
+//
+//
+//let points = [];
+//
+//
 //
 //
 //loadSmplrJs("umd")
@@ -253,24 +253,24 @@ let points = [];
 //
 //		/////////////
 //	});
-
-
-// Generate Id ==> It will be replaced by the UUID$ package
-function generateSpecificID() {
-	const randomID = Math.floor(Math.random() * (1000 - 9999 + 1)) + 9999;
-	console.log(randomID);
-	return randomID;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
+//
+//
+//// Generate Id ==> It will be replaced by the UUID$ package
+//function generateSpecificID() {
+//	const randomID = Math.floor(Math.random() * (1000 - 9999 + 1)) + 9999;
+//	console.log(randomID);
+//	return randomID;
+//}
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//

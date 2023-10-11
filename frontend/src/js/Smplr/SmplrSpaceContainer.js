@@ -24,7 +24,33 @@ class SmplrSpaceContainer extends PolymerElement {
 					containerId: this.containerId
 				}
 
-			}
+			},
+			Point: {
+				type: Object,
+				id: {
+					type: Number,
+				},
+				name: {
+					type: String,
+				},
+
+				Position: {
+					elevation: {
+						type: Number,
+					},
+					levelIndex: {
+						type: Number,
+					},
+
+					x: {
+						type: Number,
+					},
+					z: {
+						type: Number,
+					},
+				}
+
+			},
 		}
 	}
 
@@ -35,13 +61,13 @@ class SmplrSpaceContainer extends PolymerElement {
 
 
 
-	static get template() {
-		return html`
-
-			<!-- This is the div the Space will be rendered in -->
-			<div id="container"></div>
-        `;
-	}
+	//	static get template() {
+	//		return html`
+	//
+	//			<!-- This is the div the Space will be rendered in -->
+	//			<div id="container"></div>
+	//        `;
+	//	}
 
 
 	static get is() {
@@ -54,46 +80,52 @@ class SmplrSpaceContainer extends PolymerElement {
 		console.log(this.spaceId);
 		console.log(this.clientToken);
 		console.log(this.containerId);
-		this.startView();
+
+		let t = JSON.parse(this.Point)
+		console.log(t);
+
+
 	}
 
 
-//	startViewSpace(spaceId, clientToken, containerId) {
-//		loadSmplrJs("umd")
-//			.then((smplr) => {
-//				const space = new smplr.Space({
-//					spaceId: spaceId,
-//					clientToken: clientToken,
-//					containerId: containerId,
-//
-//				});
-//
-//				space.startViewer({
-//					preview: true,
-//					onReady: () => console.log("Viewer is ready"),
-//					onError: (error) => console.error("Could not start viewer", error),
-//				});
-//			})
-//	}
+	connectedCallback() {
+		super.connectedCallback();
+		let t = JSON.parse(this.Point)
+		loadSmplrJs("umd")
+			.then((smplr) => {
+				const space = new smplr.Space({
+					spaceId: JSON.parse(this.spaceId),
+					clientToken: JSON.parse(this.clientToken),
+					containerId: JSON.parse(this.containerId),
+
+				});
+
+				space.startViewer({
+					preview: true,
+					onReady: () => {
+						console.log("Viewer is ready");
+						view();
+					},
+					onError: (error) => console.error("Could not start viewer", error),
+				});
+
+				//				const view = () => {
+				//					space.addDataLayer({
+				//
+				//						id: "POINT",
+				//						type: 'point',
+				//						data: t[0].Position,
+				//					})
+				//				}
+
+			})
 
 
-		startView() {	
-			loadSmplrJs("umd")
-				.then((smplr) => {
-					const space = new smplr.Space({
-						spaceId: JSON.parse(this.spaceId),	
-						clientToken: JSON.parse(this.clientToken),
-						containerId: JSON.parse(this.containerId),
-	
-					});
-	
-					space.startViewer({
-						preview: true,
-						onReady: () => console.log("Viewer is ready"),
-						onError: (error) => console.error("Could not start viewer", error),
-					});
-				})
-		}
+
+
+	}
+
+
 }
 customElements.define(SmplrSpaceContainer.is, SmplrSpaceContainer)
 

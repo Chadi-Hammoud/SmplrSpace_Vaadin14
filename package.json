@@ -5,7 +5,7 @@
     "@polymer/iron-icons": "^3.0.1",
     "@polymer/iron-list": "3.1.0",
     "@polymer/polymer": "^3.2.0",
-    "@smplrspace/smplr-loader": "^2.9.0",
+    "@smplrspace/smplr-loader": "^2.10.0",
     "@vaadin/vaadin-accordion": "1.2.0",
     "@vaadin/vaadin-app-layout": "2.2.0",
     "@vaadin/vaadin-avatar": "1.0.4",
@@ -166,6 +166,6 @@
       "webpack-dev-server": "3.11.0",
       "webpack-merge": "4.2.2"
     },
-    "hash": "5a278781e05ec05dab3e162042d4b32ce4a88702140929fa562d74eac0fa6f92"
+    "hash": "d71f60fd833d4c9b1f9428c3dd1c8c0f410189dbe64f399582cbf8cc2f6af4ad"
   }
 }
