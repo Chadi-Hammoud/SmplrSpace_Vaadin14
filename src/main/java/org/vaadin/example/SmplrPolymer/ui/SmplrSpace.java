@@ -1,7 +1,9 @@
 package org.vaadin.example.SmplrPolymer.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.vaadin.example.SmplrPolymer.Data.Point;
 import org.vaadin.example.SmplrPolymer.Data.Position;
@@ -23,13 +25,17 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 @JsModule("./src/js/Smplr/SmplrSpaceContainer.js")
 
 public class SmplrSpace extends PolymerTemplate<TemplateModel> {
+	private static final long serialVersionUID = 1882208222260143747L;
 
 	List<Point> points = new ArrayList<>();
 
-	public static final String SPACE_ID = "b6e6acf9-1524-4f2b-a257-c6edd64832e0";
-	public static final String CLIENT_TOKEN = "pub_fc4b7f5e33bd49cf98912c56c404de8c";
-	public static final String CONTAINER_ID = "container";
-	Gson gson = new Gson();
+	private static final String SPACE_ID = "b6e6acf9-1524-4f2b-a257-c6edd64832e0";
+	private static final String CLIENT_TOKEN = "pub_fc4b7f5e33bd49cf98912c56c404de8c";
+	private static final String CONTAINER_ID = "container";
+	private Gson gson = new Gson();
+
+	private Map<Integer, Point> idToPoint = new HashMap<>();
+	private int nextPointId = 0;
 
 	public SmplrSpace() {
 
@@ -52,19 +58,26 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 
 		// float elevation, float x, float z , int levelIndex
 		Position pos = new Position(2.4597055500462695, -7.325816322330535, -12.077383563026133, 1);
-		Point p = new Point(pos);
+		Point p = new Point("P",pos);
 		points.add(p);
-		
+
 		String jsonPoint = gson.toJson(points);
-		
+
 		getElement().setProperty("Point", jsonPoint);
 		System.out.println(jsonPoint);
-		
-		
-		
-		
+
 		System.out.println(p);
 
+	}
+
+	public void startView() {
+		getElement().callJsFunction("startSpaceView");
+	}
+
+//	public void addPoint(List<Point> pt) {
+
+	public void addPoint() {
+		getElement().callJsFunction("addPoint");
 	}
 
 }

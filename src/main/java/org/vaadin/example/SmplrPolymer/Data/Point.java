@@ -5,20 +5,29 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Point {
 
 	private static final AtomicInteger atomicInt = new AtomicInteger(0);
-	private String NAME;
-	private int id;
+	private String name;
+	private String id;
 
 	private Position position;
 
 	public Point() {
 
 	}
-
-	public Point(Position position) {
-		this.id = atomicInt.incrementAndGet();
-		this.NAME = "Point";
+	
+	public Point(String id, Position position) {
+		this.id = id;
+		this.name = "Point";
 
 		this.position = position;
+	}
+	
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Position getPosition() {

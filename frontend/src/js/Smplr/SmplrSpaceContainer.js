@@ -2,11 +2,13 @@ import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { loadSmplrJs } from "@smplrspace/smplr-loader";
 
 
-
 class SmplrSpaceContainer extends PolymerElement {
 
 	static get properties() {
 		return {
+			ss: {
+				type: Object,
+			},
 			spaceId: {
 				type: String,
 			},
@@ -23,12 +25,11 @@ class SmplrSpaceContainer extends PolymerElement {
 					clientToken: this.clientToken,
 					containerId: this.containerId
 				}
-
 			},
 			Point: {
 				type: Object,
 				id: {
-					type: Number,
+					type: String,
 				},
 				name: {
 					type: String,
@@ -54,21 +55,33 @@ class SmplrSpaceContainer extends PolymerElement {
 		}
 	}
 
+
+
+
+	static get template() {
+		return html`
+		<style>
+		div{
+			width: 800px;
+			height: 500px;
+		}
+		</style>
+	
+				<!-- This is the div the Space will be rendered in -->
+				<div id="container"></div>
+	        `;
+	}
+
+	_attachDom(dom) {
+		this.appendChild(dom);
+		// don't create shadow root, just append the content
+		return this;
+	}
+
 	constructor() {
 		super();
 
 	}
-
-
-
-	//	static get template() {
-	//		return html`
-	//
-	//			<!-- This is the div the Space will be rendered in -->
-	//			<div id="container"></div>
-	//        `;
-	//	}
-
 
 	static get is() {
 		return "smplrspace-container";
@@ -77,87 +90,80 @@ class SmplrSpaceContainer extends PolymerElement {
 	ready() {
 		super.ready();
 
-		console.log(this.spaceId);
-		console.log(this.clientToken);
-		console.log(this.containerId);
-
-		let t = JSON.parse(this.Point)
-		console.log(t);
-
-
 	}
-
 
 	connectedCallback() {
 		super.connectedCallback();
-		let t = JSON.parse(this.Point)
+
+		var element = this;
+		while (element.parentNode && (element = element.parentNode)) {
+			if (element instanceof ShadowRoot) {
+				console.error("This element does not support shadow roots. Please use a <slot> for the element instead.", element);
+			}
+		}
+
 		loadSmplrJs("umd")
 			.then((smplr) => {
-				const space = new smplr.Space({
+				
+				console.log("smplr"+ JSON.stringify(smplr))
+
+				this.ss = new smplr.Space({
 					spaceId: JSON.parse(this.spaceId),
 					clientToken: JSON.parse(this.clientToken),
 					containerId: JSON.parse(this.containerId),
-
 				});
 
-				space.startViewer({
-					preview: true,
-					onReady: () => {
-						console.log("Viewer is ready");
-						view();
-					},
-					onError: (error) => console.error("Could not start viewer", error),
-				});
+				console.log("In after the construct: " + this.ss)
+				
+				this.startSpaceView();
 
-				//				const view = () => {
-				//					space.addDataLayer({
-				//
-				//						id: "POINT",
-				//						type: 'point',
-				//						data: t[0].Position,
-				//					})
-				//				}
+			});
 
-			})
+		
 
+
+	}
+
+	disconnectedCallback() {
 
 
 
 	}
+
+
+	callSpace() {
+
+		console.log(this.ss)
+
+	}
+
+	startSpaceView() {
+		this.ss.startViewer({
+			preview: true,
+			onReady: () => {
+				console.log("Viewer is ready");
+//							this.addPoint();
+			},
+			onError: (error) => console.error("Could not start viewer", error),
+		});
+
+	}
+
+
+	addPoint() {
+		this.ss.addDataLayer({
+			id: 'Point',
+			type: 'point',
+			data: JSON.parse(this.Point),
+		});
+		console.log(JSON.parse(this.Point));
+	}
+
+
+
 
 
 }
 customElements.define(SmplrSpaceContainer.is, SmplrSpaceContainer)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
