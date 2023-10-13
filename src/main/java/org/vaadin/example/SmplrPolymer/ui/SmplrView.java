@@ -25,6 +25,7 @@ public class SmplrView extends VerticalLayout {
 			space.addPoint();
 			Notification.show("Button clicked! the data will be binded");
 		});
+		
 
 		add(space, btn);
 

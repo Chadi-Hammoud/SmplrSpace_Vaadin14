@@ -4,6 +4,7 @@ import { loadSmplrJs } from "@smplrspace/smplr-loader";
 
 class SmplrSpaceContainer extends PolymerElement {
 
+
 	static get properties() {
 		return {
 			ss: {
@@ -18,16 +19,11 @@ class SmplrSpaceContainer extends PolymerElement {
 			containerId: {
 				type: String,
 			},
-			data: {
-				type: Object,
-				IBRAHIM: {
-					sapce: this.spaceId,
-					clientToken: this.clientToken,
-					containerId: this.containerId
-				}
+			pointList: {
+				type: Array,
 			},
 			Point: {
-				type: Object,
+				type: Array,
 				id: {
 					type: String,
 				},
@@ -80,7 +76,7 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	constructor() {
 		super();
-
+		 this.pointList = [];
 	}
 
 	static get is() {
@@ -104,8 +100,8 @@ class SmplrSpaceContainer extends PolymerElement {
 
 		loadSmplrJs("umd")
 			.then((smplr) => {
-				
-				console.log("smplr"+ JSON.stringify(smplr))
+
+				console.log("smplr" + JSON.stringify(smplr))
 
 				this.ss = new smplr.Space({
 					spaceId: JSON.parse(this.spaceId),
@@ -114,12 +110,12 @@ class SmplrSpaceContainer extends PolymerElement {
 				});
 
 				console.log("In after the construct: " + this.ss)
-				
+
 				this.startSpaceView();
 
 			});
 
-		
+
 
 
 	}
@@ -142,28 +138,145 @@ class SmplrSpaceContainer extends PolymerElement {
 			preview: true,
 			onReady: () => {
 				console.log("Viewer is ready");
-//							this.addPoint();
+				//							this.addPoint();
 			},
 			onError: (error) => console.error("Could not start viewer", error),
 		});
 
 	}
 
+	/////////////////////////////////////////
+	//	addPoint() {
+	//		this.ss.addDataLayer({
+	//			id: 'Point',
+	//			type: 'point',
+	//			data: JSON.parse(this.Point),
+	//		});
+	//		console.log(JSON.parse(this.Point));
+	//	}
+	///////////////////////////////////////
 
-	addPoint() {
+
+
+	addPointData(pt) {
+		
+		console.log(pt)
+
+		try {
+			this.pointList.push(pt);
+			console.log("Point ", pt, " was successfully added to Points");
+			 console.log(this.pointList)
+
+			this.addPointDataLayer();
+		} catch (error) {
+			console.log('Point cannot added to the Points array');
+		}
+
+	}
+
+	addPointDataLayer() {
 		this.ss.addDataLayer({
-			id: 'Point',
+			id: 'points',
 			type: 'point',
-			data: JSON.parse(this.Point),
-		});
-		console.log(JSON.parse(this.Point));
+			data: this.pointList,
+			diameter: 0.5,
+			anchor: 'bottom',
+			//        tooltip: d => d.id,
+			//        onClick: (data) => {
+			//            console.log(data);
+			//            tempPoint = data;
+			//            console.log("Temp: " + JSON.stringify(tempPoint));
+			//            // console.log(points);
+			//        },
+
+
+			//        onDrop: ({ data, position }) => {
+			//            console.log("data: " + JSON.stringify(data));
+			//            console.log("position: " + JSON.stringify(position));
+
+
+
+			// updatePoint({
+			//            dispatchPoint({
+			//                type: 'update',
+			//                id: data.id,
+			//                updates: { position }
+			//            });
+			//        }
+		})
 	}
 
 
 
 
+	addPoint() {
+		this.ss.enablePickingMode({
+			onPick: ({ coordinates }) => {
+
+				console.log(coordinates)
+				const pID = this.generateSpecificID();
+				console.log(coordinates);
+				this.dispatchPoint({
+					type: 'add',
+					point: {
+						id: this.generateSpecificID(),
+						namePoint: "Point",
+						type: 'point',
+						position: coordinates
+					}
+				});
+//				 addPointData(point);
+			}
+		})
+	}
+
+	generateSpecificID() {
+		const randomID = Math.floor(Math.random() * (1000 - 9999 + 1)) + 9999;
+		console.log(randomID);
+		return randomID;
+	}
+
+
+
+
+	dispatchPoint(action) {
+		switch (action.type) {
+			case 'add':
+				this.addPointData(action.point);
+				break;
+			//   return [...points, action.point]
+			case 'update':
+				this.updatePoint(action)
+				break;
+			// return points.map(pt =>
+			//     pt.id === action.id ? { ...pt, ...action.updates } : pt
+			// )
+			case 'remove':
+				// return reject(r => r.id === action.id)(points)
+				this.removePoint(tempPoint.id);
+				// removePoint(action.point.id);
+				break;
+			default:
+				console.error(`Unknown action type ${action.type}`)
+		}
+	}
+
 
 }
 customElements.define(SmplrSpaceContainer.is, SmplrSpaceContainer)
+
+//	export const getExportableData = ()=> {
+//		SmplrSpaceContainer s = new SmplrSpaceContainer();
+//			return {
+//				ss: this.ss,
+//				spaceId: this.spaceId,
+//				clientToken: this.clientToken,
+//				containerId: this.containerId,
+//				data: this.data,
+//				Point: this.Point
+//			};
+//		}
+//
+
 
 

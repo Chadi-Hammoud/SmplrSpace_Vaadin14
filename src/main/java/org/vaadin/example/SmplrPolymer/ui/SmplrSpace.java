@@ -79,5 +79,9 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	public void addPoint() {
 		getElement().callJsFunction("addPoint");
 	}
+	
+	public void drawPoints() {
+		getElement().callJsFunction("addPointDataLayer");
+	}
 
 }
