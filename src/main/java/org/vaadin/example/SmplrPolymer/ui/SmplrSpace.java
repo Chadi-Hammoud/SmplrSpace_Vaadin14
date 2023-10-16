@@ -83,5 +83,19 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	public void drawPoints() {
 		getElement().callJsFunction("addPointDataLayer");
 	}
-
+	
+	public void removePoint() {
+		getElement().callJsFunction("removePoint");
+	}
+	
+	public void disablePick() {
+		getElement().callJsFunction("disablePick");
+	}
+	
+	public void updateDataLayers() {
+		getElement().callJsFunction("updateDataLayers");
+	}
+	
+	
+	
 }
