@@ -1,12 +1,11 @@
 package org.vaadin.example.SmplrPolymer.Data;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 public class Point {
 
-	private static final AtomicInteger atomicInt = new AtomicInteger(0);
 	private String name;
-	private String id;
+	private UUID id;
 
 	private Position position;
 
@@ -14,7 +13,7 @@ public class Point {
 
 	}
 	
-	public Point(String id, Position position) {
+	public Point(UUID id, Position position) {
 		this.id = id;
 		this.name = "Point";
 
@@ -22,11 +21,11 @@ public class Point {
 	}
 	
 
-	public String getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 

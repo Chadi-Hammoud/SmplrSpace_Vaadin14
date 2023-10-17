@@ -1,15 +1,30 @@
 package org.vaadin.example.SmplrPolymer.Data;
 
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.ApplicationScope;
+import java.util.List;
 
-@Service
-@ApplicationScope
+
 public class SpaceService {
 
+	private List<Point> points;
+	
 	public SpaceService() {
-		// TODO Auto-generated constructor stub
-	}
+		Point p = new Point();
+		
+        this.points.add(p);
+    }
+
+	public SpaceService(List<Point> points) {
+        this.points = points;
+    }
+
+    public List<Point> getPoints() {
+        return points;
+    }
+
+    public void setPoints(List<Point> points) {
+        this.points = points;
+    }
+
 	
 	
 

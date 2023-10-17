@@ -39,20 +39,24 @@ public class SmplrView extends VerticalLayout {
 			space.disablePick();
 			Notification.show("Pick Mode will be disabled");
 		});
-		
+
 		Button updateDataLayersBtn = new Button("update Data");
 		updateDataLayersBtn.addClickListener(event -> {
 			// This code will be executed when the button is clicked
 			space.updateDataLayers();
 //			Notification.show("Pick Mode will be disabled");
 		});
-		
-		
-		
+
+		Button addPointDataJavaBtn = new Button("add Point Java");
+		addPointDataJavaBtn.addClickListener(event -> {
+			// This code will be executed when the button is clicked
+			space.drawPoint();
+//			Notification.show("Pick Mode will be disabled");
+		});
 
 		HorizontalLayout hrz = new HorizontalLayout();
 
-		hrz.add(addBtn, removeBtn, disablePickBtn, updateDataLayersBtn);
+		hrz.add(addBtn, removeBtn, disablePickBtn, updateDataLayersBtn, addPointDataJavaBtn);
 
 		add(space, hrz);
 	}
