@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.vaadin.example.SmplrPolymer.Data.Point;
+import org.vaadin.example.SmplrPolymer.Data.PointEvent;
 import org.vaadin.example.SmplrPolymer.Data.Position;
 import org.vaadin.example.SmplrPolymer.Data.SpaceService;
 
@@ -16,6 +17,7 @@ import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.dom.PropertyChangeEvent;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
 
@@ -57,11 +59,6 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		getElement().setProperty("clientToken", jsonClientToken);
 		getElement().setProperty("containerId", jsonContainerID);
 
-//		bindData();
-//		getElement().callJsFunction("startView");
-//		getElement().callJsFunction("startViewSpace", SPACE_ID, CLIENT_TOKEN, CONTAINER_ID);
-//		System.out.print("Starting View");
-
 	}
 
 //	public void bindData() {
@@ -99,9 +96,8 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	}
 
 	public void addInitPoint(String shape) {
-		UUID ptId = UUID.randomUUID();
-		Position pos = new Position(2.4597055500462695, -7.325816322330535, -12.077383563026133, 1);
-		Point p = new Point(ptId, pos);
+		Position pos = new Position(pointelEvation, pointX, pointZ, pointLevelIndex);
+		Point p = new Point(pos);
 		System.out.println("Point:" + p);
 		points.add(p);
 		System.out.println("Point:" + points);
@@ -124,19 +120,40 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	}
 
 	public void drawPoint() {
-		UUID ptId = UUID.randomUUID();
-		
+		bindDataToPolymerComponent();
 		Position pos = new Position(pointelEvation, pointX, pointZ, pointLevelIndex);
-		Point pt = new Point(ptId, pos);
+		Point pt = new Point(pos);
 		points.add(pt);
-		System.err.print(points);
+		System.err.print(points.toString());
 		bindDataToPolymerComponent();
 		addPointDataJava();
 
 	}
-	
+
 	public void addPointDataJava() {
 		getElement().callJsFunction("addPointDataJava");
+	}
+	
+	
+	public void updateView() {
+		getElement().callJsFunction("updateView");
+	}
+	
+
+	/////////////////////////////////////////////////////
+
+//	this.dispatchPoint({
+//	type: 'add',
+//	point: {
+//		id: this.generateSpecificID(),
+//		namePoint: "point",
+//		type: 'point',
+//		position: coordinates,
+//
+//	}
+//});
+
+	public void dispatchedPoint() {
 	}
 
 	/////////////////////////////////////////////////////

@@ -7,18 +7,18 @@ public class Position {
 	private double elevation;
 	private int levelIndex;
 
-	public Position() {
+//	public Position() {
+//
+//		this.x = 0.0;
+//		this.z = 0.0;
+//		this.elevation = 0.0;
+//		this.levelIndex = 0;
+//	}
 
-		this.x = 0.0;
-		this.z = 0.0;
-		this.elevation = 0.0;
-		this.levelIndex = 0;
-	}
-
-	public Position( double elevation, double x,  double z , int levelIndex ) {
+	public Position(double elevation, double x, double z, int levelIndex) {
+		this.elevation = elevation;
 		this.x = x;
 		this.z = z;
-		this.elevation = elevation;
 		this.levelIndex = levelIndex;
 	}
 

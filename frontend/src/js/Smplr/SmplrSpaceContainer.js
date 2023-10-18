@@ -31,6 +31,8 @@ class SmplrSpaceContainer extends PolymerElement {
 			coordinates: {
 				elevation: {
 					type: Number,
+					notify: true,
+	
 				},
 				levelIndex: {
 					type: Number,
@@ -200,7 +202,7 @@ class SmplrSpaceContainer extends PolymerElement {
 		this.ss.addDataLayer({
 			id: 'points',
 			type: 'point',
-			data: this.pointList,
+			data: JSON.parse(this.pointList),
 			diameter: 0.5,
 			anchor: 'bottom',
 			tooltip: d => d.id,
@@ -223,7 +225,7 @@ class SmplrSpaceContainer extends PolymerElement {
 				//////////////////////////////////
 				console.log("data: " + JSON.stringify(data));
 				console.log("position: " + JSON.stringify(position));
-				// updatePoint({
+				// updatePoint Call dispatchPoint
 				this.dispatchPoint({
 					type: 'update',
 					id: data.id,
@@ -274,7 +276,6 @@ class SmplrSpaceContainer extends PolymerElement {
 
 				this.dispatchPoint({
 					type: 'add',
-					clicked: this.clicked,
 					point: {
 						id: this.generateSpecificID(),
 						namePoint: "point",
@@ -315,7 +316,7 @@ class SmplrSpaceContainer extends PolymerElement {
 		this.ss.addDataLayer({
 			id: 'points',
 			type: 'point',
-			data: this.pointList,
+			data: JSON.parse(this.pointList),
 			diameter: 0.5,
 			anchor: 'bottom',
 			tooltip: d => d.id
