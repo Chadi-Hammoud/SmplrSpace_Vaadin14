@@ -2,6 +2,7 @@ package org.vaadin.example.SmplrPolymer.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -10,8 +11,10 @@ import org.vaadin.example.SmplrPolymer.Data.Point;
 import org.vaadin.example.SmplrPolymer.Data.PointEvent;
 import org.vaadin.example.SmplrPolymer.Data.Position;
 import org.vaadin.example.SmplrPolymer.Data.SpaceService;
+import org.vaadin.example.SmplrPolymer.Data.UpdatesPointPosition;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -87,6 +90,7 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	public void bindListOfPointsToPolymerComponent(SpaceService data) {
 
 		String PointsJson = gson.toJson(data.getPoints());
+		System.out.println(PointsJson);
 		getElement().setProperty("pointList", PointsJson);
 	}
 
@@ -96,16 +100,15 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	}
 
 	public void addInitPoint(String shape) {
-		Position pos = new Position(pointelEvation, pointX, pointZ, pointLevelIndex);
-		Point p = new Point(pos);
-		System.out.println("Point:" + p);
-		points.add(p);
-		System.out.println("Point:" + points);
-		// Convert the new Point to JSON
-
-		bindDataToPolymerComponent();
-
-		getElement().callJsFunction("addPoint");
+//		Position pos = new Position(pointelEvation, pointX, pointZ, pointLevelIndex);
+//		Point p = new Point(pos);
+//		System.out.println("Point:" + p);
+//		points.add(p);
+//		System.out.println("Point:" + points);
+//
+//		bindDataToPolymerComponent();
+//
+//		getElement().callJsFunction("addPoint");
 
 	}
 
@@ -119,26 +122,84 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		System.out.println("Point is: (" + pointX + ";" + pointZ + ";" + pointLevelIndex + ";" + pointelEvation + ")");
 	}
 
-	public void drawPoint() {
+	@ClientCallable
+	public void setClientUpdatedData(String _recievedData) {
+		System.out.println("Recieved Data:" + _recievedData);
+
+		JsonObject data = gson.fromJson(_recievedData, JsonObject.class);
+		String id = data.get("id").getAsString();
+		JsonObject updates = data.get("updates").getAsJsonObject();
+
+		Position _updatedPosition = new Position();
+		double _newPosX = updates.get("x").getAsDouble();
+		double _newPosZ = updates.get("x").getAsDouble();
+		int _newPosLevelIndex = updates.get("x").getAsInt();
+		int _newPosElevation = updates.get("x").getAsInt();
+
+		_updatedPosition.setX(_newPosX);
+		_updatedPosition.setZ(_newPosZ);
+		_updatedPosition.setLevelIndex(_newPosLevelIndex);
+		_updatedPosition.setElevation(_newPosElevation);
+
+		updatePointPosition(id, _newPosX, _newPosZ, _newPosLevelIndex, _newPosElevation);
+
+		System.err.println("ID: " + id);
+		System.err.println("Updates: " + updates);
+	}
+
+	// Method to update the position of a point in the list
+	public void updatePointPosition(String pointId, double newX, double newZ, double newLevelIndex,
+			double newElevation) {
+
+		for (Point point : points) {
+			if (point.getId().equals(pointId)) {
+
+				point.getPosition().setX(newX);
+				point.getPosition().setZ(newZ);
+				point.getPosition().setElevation(newLevelIndex);
+				point.getPosition().setElevation(newElevation);
+
+				break;
+			}
+		}
 		bindDataToPolymerComponent();
-		Position pos = new Position(pointelEvation, pointX, pointZ, pointLevelIndex);
+
+		Iterator<Point> iterator = points.iterator();
+
+		// Iterate through the list using the iterator
+		while (iterator.hasNext()) {
+			Point point = iterator.next();
+			System.out.println(" New Point: (" + point.getPosition().getX() + ")");
+		}
+
+	}
+
+	public void drawPoint() {
+//		bindDataToPolymerComponent();
+//		Position po = new Position(pointelEvation, pointX, pointZ, pointLevelIndex);
+		Position pos = new Position(0, -7.2, -7.6, 0);
 		Point pt = new Point(pos);
 		points.add(pt);
-		System.err.print(points.toString());
-		bindDataToPolymerComponent();
-		addPointDataJava();
+		// Iterator
+		Iterator<Point> iterator = points.iterator();
 
+		// Iterate through the list using the iterator
+		while (iterator.hasNext()) {
+			Point point = iterator.next();
+			System.out.println("Point: (" + point.getId() + ")");
+		}
+
+		addPointData(pt);
+//		addPointDataJava();
 	}
 
 	public void addPointDataJava() {
 		getElement().callJsFunction("addPointDataJava");
 	}
-	
-	
+
 	public void updateView() {
 		getElement().callJsFunction("updateView");
 	}
-	
 
 	/////////////////////////////////////////////////////
 
@@ -152,6 +213,18 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 //
 //	}
 //});
+
+	public void addPointData(Point pt) {
+		try {
+			points.add(pt);
+			System.out.println("Point " + pt.getName() + " was successfully added to Points");
+
+			bindDataToPolymerComponent();
+			addPointDataJava();
+		} catch (Exception error) {
+			System.out.println("Point cannot be added to the Points array");
+		}
+	}
 
 	public void dispatchedPoint() {
 	}

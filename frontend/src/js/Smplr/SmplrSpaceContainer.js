@@ -31,8 +31,8 @@ class SmplrSpaceContainer extends PolymerElement {
 			coordinates: {
 				elevation: {
 					type: Number,
-					notify: true,
-	
+					//					notify: true,
+
 				},
 				levelIndex: {
 					type: Number,
@@ -182,69 +182,19 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	addPointData(pt) {
 
-		console.log(pt)
-
-		try {
-			this.pointList.push(pt);
-			console.log("point ", pt, " was successfully added to Points");
-			console.log(this.pointList)
-
-			this.addPointDataLayer();
-		} catch (error) {
-			console.log('point cannot added to the Points array');
-		}
-
-	}
-
-
-
-	addPointDataLayer() {
-		this.ss.addDataLayer({
-			id: 'points',
-			type: 'point',
-			data: JSON.parse(this.pointList),
-			diameter: 0.5,
-			anchor: 'bottom',
-			tooltip: d => d.id,
-			onClick: (data) => {
-
-				console.log(data);
-				this.tempPoint = data;
-				console.log("Temp: " + JSON.stringify(this.tempPoint));
-				console.log(this.pointList);
-			},
-			onDrop: ({ data, position }) => {
-				///////////////////////////////////////
-				this.coordinates = position;
-				this.getClientData()
-				console.log(data);
-				this.tempPoint = data;
-				console.log("Temp: " + JSON.stringify(this.tempPoint));
-				console.log(this.pointList);
-
-				//////////////////////////////////
-				console.log("data: " + JSON.stringify(data));
-				console.log("position: " + JSON.stringify(position));
-				// updatePoint Call dispatchPoint
-				this.dispatchPoint({
-					type: 'update',
-					id: data.id,
-					updates: { position }
-				});
-
-
-				//				this.ss.disablePickingMode();
-			}
-
-		})
-
+		//		console.log(pt)
+		//
+		//		try {
+		//			this.pointList.push(pt);
+		//			console.log("point ", pt, " was successfully added to Points");
+		//			console.log(this.pointList)
+		//
+		//			this.addPointDataLayer();
+		//		} catch (error) {
+		//			console.log('point cannot added to the Points array');
+		//		}
 
 	}
-
-
-
-
-
 
 
 	addPointDataJava() {
@@ -255,8 +205,25 @@ class SmplrSpaceContainer extends PolymerElement {
 			diameter: 0.5,
 			anchor: 'bottom',
 			tooltip: d => d.id,
+			onClick: (data) => {
+				this.tempPoint = data;
+			},
+			onDrop: ({ data, position }) => {
+				///////////////////////////////////////
+				this.coordinates = position;
+				this.getClientUpdatedData(data.id, position);
+				this.getClientData();
+
+				this.tempPoint = data;
+				///////////////////////////////////////
+				// updatePoint Call dispatchPoint
+				//				this.dispatchPoint({
+				//					type: 'update',
+				//					id: data.id,
+				//					updates: { position }
+				//				});
+			}
 		})
-		this.addPointDataLayer();
 	}
 
 
@@ -295,12 +262,11 @@ class SmplrSpaceContainer extends PolymerElement {
 	}
 
 	updatePoint(action) {
-		console.log("action" + JSON.stringify(action))
-		console.log("points: " + this.pointList);
-		for (let i = 0; i < this.pointList.length; i++) {
-			if (this.pointList[i].id === action.id) {
-				this.pointList[i].position = action.updates.position;
-				console.log(this.pointList);
+		for (let i = 0; i < JSON.parse(this.pointList).length; i++) {
+			if (JSON.parse(this.pointList)[i].id === action.id) {
+
+				JSON.parse(this.pointList)[i].position = action.updates.position;
+				this.getClientUpdatedData();
 				this.updateView();
 				return this.pointList;
 
@@ -319,8 +285,27 @@ class SmplrSpaceContainer extends PolymerElement {
 			data: JSON.parse(this.pointList),
 			diameter: 0.5,
 			anchor: 'bottom',
-			tooltip: d => d.id
+			tooltip: d => d.id,
+			onClick: (data) => {
+				this.tempPoint = data;
+			},
+			onDrop: ({ data, position }) => {
+				///////////////////////////////////////
+				this.coordinates = position;
+				this.getClientUpdatedData(data.id);
+				this.getClientData();
+
+				this.tempPoint = data;
+				///////////////////////////////////////
+				// updatePoint Call dispatchPoint
+				//				this.dispatchPoint({
+				//					type: 'update',
+				//					id: data.id,
+				//					updates: { position }
+				//				});
+			}
 		})
+
 	}
 
 
@@ -339,48 +324,29 @@ class SmplrSpaceContainer extends PolymerElement {
 
 
 
-
-	updateDataLayers() {
-		this.ss.removeDataLayer('IT_Room');
-
+	//
+	addPointDataLayer() {
 		this.ss.addDataLayer({
-			id: "Desk",
-			type: 'furniture',
-			data: Desk,
-			tooltip: (d) => `${d.name} - ${d.Employee == '' ? 'free' : d.Employee}`,
-			color: (d) => (d.Employee == '' ? '#f75e56' : '#03fc24'),
-		});
+			id: 'points',
+			type: 'point',
+			data: this.pointList,
+			diameter: 0.5,
+			anchor: 'bottom',
+			tooltip: d => d.id,
+			onClick: (data) => {
+				this.tempPoint = data;
+			},
+			onDrop: ({ data, position }) => {
+				this.coordinates = position;
+				this.getClientData();
 
-
-		this.ss.addDataLayer({
-			id: "Servers",
-			type: 'furniture',
-			data: Servers,
-			tooltip: (d) => `${d.name} - ${d.Brand} -${d.temprature}! ${d.temprature > 65 ? 'Hot Temp' : 'Normal Temp'}`,
-			color: (d) => `${d.temprature >= 65 ? '#f75e56' : '#50b268'}`,
-		});
-
-		this.ss.addDataLayer({
-			id: "AC",
-			type: 'furniture',
-			data: AC,
-			tooltip: (d) => `${d.name} - ${d.Brand}`,
-			color: (d) => (d.ON ? '#0398fc' : '#f75e56'),
-		});
-
-		this.ss.addDataLayer({
-			id: "Departments",
-			type: 'polygon',
-			data: Departments,
-			baseHeight: 0,
-			height: 1.5,
-			color: (d) => (d.name == 'CEO' ? '#0398fc' : (d.name == 'Seniors' ? '#5feb63' : '#d15c5c')),
-			alpha: 0.5,
-			tooltip: (d) => `Dep: ${d.name}`,
+				this.dispatchPoint({
+					type: 'update',
+					id: data.id,
+					updates: { position }
+				});
+			}
 		})
-
-		//    console.log(this.ss.getDataLayer("Departments"));
-
 	}
 
 
@@ -396,6 +362,7 @@ class SmplrSpaceContainer extends PolymerElement {
 				break;
 			//   return [...points, action.point]
 			case 'update':
+				this.getClientUpdatedData(action.id, action);
 				this.updatePoint(action)
 				break;
 			// return points.map(pt =>
@@ -408,6 +375,7 @@ class SmplrSpaceContainer extends PolymerElement {
 				break;
 
 			case 'updateView':
+				this.getClientUpdatedData(action.id, action);
 				this.addPointDataLayer();
 				break;
 			default:
@@ -420,8 +388,23 @@ class SmplrSpaceContainer extends PolymerElement {
 	/////////////////////////////////////////////////////////////////
 
 	getClientData() {
-		//public void setClientData(double x, double z, int levelIndex, double elevation) {
 		this.$server.setClientData(this.coordinates.x, this.coordinates.z, this.coordinates.levelIndex, this.coordinates.elevation);
+
+	}
+
+	getClientUpdatedData(id) {
+		let _pointID = id;
+		let _newCoordinates = this.coordinates;
+
+		let updates = {
+			id: _pointID,
+			updates: _newCoordinates
+		}
+		
+		var jsonData = JSON.stringify(updates);
+
+
+		this.$server.setClientUpdatedData(jsonData);
 
 	}
 
@@ -431,6 +414,49 @@ class SmplrSpaceContainer extends PolymerElement {
 
 
 	/////////////////////////////////////////////////////////////////
+	//	updateDataLayers() {
+	//		this.ss.removeDataLayer('IT_Room');
+	//
+	//		this.ss.addDataLayer({
+	//			id: "Desk",
+	//			type: 'furniture',
+	//			data: Desk,
+	//			tooltip: (d) => `${d.name} - ${d.Employee == '' ? 'free' : d.Employee}`,
+	//			color: (d) => (d.Employee == '' ? '#f75e56' : '#03fc24'),
+	//		});
+	//
+	//
+	//		this.ss.addDataLayer({
+	//			id: "Servers",
+	//			type: 'furniture',
+	//			data: Servers,
+	//			tooltip: (d) => `${d.name} - ${d.Brand} -${d.temprature}! ${d.temprature > 65 ? 'Hot Temp' : 'Normal Temp'}`,
+	//			color: (d) => `${d.temprature >= 65 ? '#f75e56' : '#50b268'}`,
+	//		});
+	//
+	//		this.ss.addDataLayer({
+	//			id: "AC",
+	//			type: 'furniture',
+	//			data: AC,
+	//			tooltip: (d) => `${d.name} - ${d.Brand}`,
+	//			color: (d) => (d.ON ? '#0398fc' : '#f75e56'),
+	//		});
+	//
+	//		this.ss.addDataLayer({
+	//			id: "Departments",
+	//			type: 'polygon',
+	//			data: Departments,
+	//			baseHeight: 0,
+	//			height: 1.5,
+	//			color: (d) => (d.name == 'CEO' ? '#0398fc' : (d.name == 'Seniors' ? '#5feb63' : '#d15c5c')),
+	//			alpha: 0.5,
+	//			tooltip: (d) => `Dep: ${d.name}`,
+	//		})
+
+	//    console.log(this.ss.getDataLayer("Departments"));
+
+	//	}
+
 
 
 }

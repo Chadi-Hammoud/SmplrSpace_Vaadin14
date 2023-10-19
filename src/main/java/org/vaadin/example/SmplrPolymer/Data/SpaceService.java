@@ -8,9 +8,9 @@ public class SpaceService {
 	private List<Point> points;
 	
 	public SpaceService() {
-		Point p = new Point();
+//		Point p = new Point();
 		
-        this.points.add(p);
+//        this.points.add(p);
     }
 
 	public SpaceService(List<Point> points) {
