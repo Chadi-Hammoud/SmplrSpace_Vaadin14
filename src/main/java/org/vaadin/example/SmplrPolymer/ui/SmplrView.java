@@ -12,20 +12,18 @@ import com.vaadin.flow.router.Route;
 @NpmPackage(value = "@smplrspace/smplr-loader", version = "2.10.0")
 
 public class SmplrView extends VerticalLayout {
+	private static final long serialVersionUID = -5575582976392893617L;
 
 	public SmplrView() {
-//		Div div = new Div();
-//		div.setId("container");
-//		div.getElement().getStyle().set("height", "400px");
-//		div.getElement().getStyle().set("width", "800px");
+		
 		SmplrSpace space = new SmplrSpace();
 
-		Button addBtn = new Button("Add Point");
-		addBtn.addClickListener(event -> {
-			// This code will be executed when the button is clicked
-			space.addPoint();
-			Notification.show("Button clicked! the data will be binded");
-		});
+//		Button addBtn = new Button("Add Point");
+//		addBtn.addClickListener(event -> {
+//			// This code will be executed when the button is clicked
+//			space.addPoint();
+//			Notification.show("Button clicked! the data will be binded");
+//		});
 
 		Button removeBtn = new Button("Remove Point");
 		removeBtn.addClickListener(event -> {
@@ -53,10 +51,17 @@ public class SmplrView extends VerticalLayout {
 			space.drawPoint();
 //			Notification.show("Pick Mode will be disabled");
 		});
+		
+		Button enablePickingModeBtn = new Button("enable Picking Mode");
+		enablePickingModeBtn.addClickListener(event -> {
+			// This code will be executed when the button is clicked
+			space.enablePickingMode();
+//			Notification.show("Pick Mode will be disabled");
+		});
 
 		HorizontalLayout hrz = new HorizontalLayout();
 
-		hrz.add(addBtn, removeBtn, disablePickBtn, updateDataLayersBtn, addPointDataJavaBtn);
+		hrz.add(removeBtn, disablePickBtn, updateDataLayersBtn, addPointDataJavaBtn, enablePickingModeBtn);
 
 		add(space, hrz);
 	}

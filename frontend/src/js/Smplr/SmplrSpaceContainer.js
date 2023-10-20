@@ -199,7 +199,7 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	addPointDataJava() {
 		this.ss.addDataLayer({
-			id: 'points',
+			id: 'point',
 			type: 'point',
 			data: JSON.parse(this.pointList),
 			diameter: 0.5,
@@ -209,14 +209,14 @@ class SmplrSpaceContainer extends PolymerElement {
 				this.tempPoint = data;
 			},
 			onDrop: ({ data, position }) => {
-				///////////////////////////////////////
 				this.coordinates = position;
-				this.getClientUpdatedData(data.id, position);
-				this.getClientData();
+				this.getClientUpdatedData(data._id);
+				//				this.getClientData();
+				//				this.updateView();
 
 				this.tempPoint = data;
-				///////////////////////////////////////
-				// updatePoint Call dispatchPoint
+				/////////////////////////////////////
+				//				 updatePoint Call dispatchPoint
 				//				this.dispatchPoint({
 				//					type: 'update',
 				//					id: data.id,
@@ -234,23 +234,25 @@ class SmplrSpaceContainer extends PolymerElement {
 	}
 
 
-	addPoint() {
+	enablePickingMode() {
 		this.ss.enablePickingMode({
 			onPick: ({ coordinates }) => {
 
 				this.coordinates = coordinates;
-				this.getClientData()
+				//				this.getClientUpdatedData(data._id);
 
-				this.dispatchPoint({
-					type: 'add',
-					point: {
-						id: this.generateSpecificID(),
-						namePoint: "point",
-						type: 'point',
-						position: coordinates,
+				this.getClientData();
 
-					}
-				});
+				//				this.dispatchPoint({
+				//					type: 'add',
+				//					point: {
+				//						id: this.generateSpecificID(),
+				//						namePoint: "point",
+				//						type: 'point',
+				//						position: coordinates,
+				//
+				//					}
+				//				});
 			}
 		})
 	}
@@ -261,26 +263,26 @@ class SmplrSpaceContainer extends PolymerElement {
 		return randomID;
 	}
 
-	updatePoint(action) {
-		for (let i = 0; i < JSON.parse(this.pointList).length; i++) {
-			if (JSON.parse(this.pointList)[i].id === action.id) {
-
-				JSON.parse(this.pointList)[i].position = action.updates.position;
-				this.getClientUpdatedData();
-				this.updateView();
-				return this.pointList;
-
-			}
-		}
-		this.updateView();
-		return this.pointList;;
-	}
+	//	updatePoint(action) {
+	//		for (let i = 0; i < JSON.parse(this.pointList).length; i++) {
+	//			if (JSON.parse(this.pointList)[i].id === action.id) {
+	//
+	//				JSON.parse(this.pointList)[i].position = action.updates.position;
+	//				this.getClientUpdatedData();
+	//				this.updateView();
+	//				return this.pointList;
+	//
+	//			}
+	//		}
+	//		this.updateView();
+	//		return this.pointList;;
+	//	}
 
 
 
 	updateView() {
-		this.ss.addDataLayer({
-			id: 'points',
+		this.ss.updateDataLayer({
+			id: 'point',
 			type: 'point',
 			data: JSON.parse(this.pointList),
 			diameter: 0.5,
@@ -288,11 +290,12 @@ class SmplrSpaceContainer extends PolymerElement {
 			tooltip: d => d.id,
 			onClick: (data) => {
 				this.tempPoint = data;
+				console.log(this.pointList);
 			},
 			onDrop: ({ data, position }) => {
 				///////////////////////////////////////
 				this.coordinates = position;
-				this.getClientUpdatedData(data.id);
+				this.getClientUpdatedData(data._id);
 				this.getClientData();
 
 				this.tempPoint = data;
@@ -311,10 +314,10 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	removePoint() {
 
-		let newPoints = this.pointList.filter(obj => obj.id !== this.tempPoint.id);
+		let newPoints = this.pointList.filter(obj => obj._id !== this.tempPoint._id);
 		console.log("tempPoint " + this.tempPoint);
 		this.pointList = newPoints;
-		console.log("point " + this.tempPoint.id + " was removed successfully");
+		console.log("point " + this.tempPoint._id + " was removed successfully");
 		this.tempPoint = [];
 		this.dispatchPoint({
 			type: 'updateView',
@@ -325,29 +328,30 @@ class SmplrSpaceContainer extends PolymerElement {
 
 
 	//
-	addPointDataLayer() {
-		this.ss.addDataLayer({
-			id: 'points',
-			type: 'point',
-			data: this.pointList,
-			diameter: 0.5,
-			anchor: 'bottom',
-			tooltip: d => d.id,
-			onClick: (data) => {
-				this.tempPoint = data;
-			},
-			onDrop: ({ data, position }) => {
-				this.coordinates = position;
-				this.getClientData();
-
-				this.dispatchPoint({
-					type: 'update',
-					id: data.id,
-					updates: { position }
-				});
-			}
-		})
-	}
+//	addPointDataLayer() {
+//		this.ss.removeDataLayer();
+//		this.ss.addDataLayer({
+//			id: 'point',
+//			type: 'point',
+//			data: this.pointList,
+//			diameter: 0.5,
+//			anchor: 'bottom',
+//			tooltip: d => d.id,
+//			onClick: (data) => {
+//				this.tempPoint = data;
+//			},
+//			onDrop: ({ data, position }) => {
+//				this.coordinates = position;
+//				this.getClientData();
+//
+//				this.dispatchPoint({
+//					type: 'update',
+//					id: data._id,
+//					updates: { position }
+//				});
+//			}
+//		})
+//	}
 
 
 
@@ -362,20 +366,20 @@ class SmplrSpaceContainer extends PolymerElement {
 				break;
 			//   return [...points, action.point]
 			case 'update':
-				this.getClientUpdatedData(action.id, action);
-				this.updatePoint(action)
+				this.getClientUpdatedData(action._id, action);
+				//				this.updateView();
 				break;
 			// return points.map(pt =>
 			//     pt.id === action.id ? { ...pt, ...action.updates } : pt
 			// )
 			case 'remove':
 				// return reject(r => r.id === action.id)(points)
-				this.removePoint(tempPoint.id);
+				this.removePoint(tempPoint._id);
 				// removePoint(action.point.id);
 				break;
 
 			case 'updateView':
-				this.getClientUpdatedData(action.id, action);
+				this.getClientUpdatedData(action._id, action);
 				this.addPointDataLayer();
 				break;
 			default:
@@ -395,14 +399,11 @@ class SmplrSpaceContainer extends PolymerElement {
 	getClientUpdatedData(id) {
 		let _pointID = id;
 		let _newCoordinates = this.coordinates;
-
 		let updates = {
 			id: _pointID,
 			updates: _newCoordinates
 		}
-		
 		var jsonData = JSON.stringify(updates);
-
 
 		this.$server.setClientUpdatedData(jsonData);
 

@@ -1,38 +1,35 @@
 package org.vaadin.example.SmplrPolymer.Data;
 
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Point {
 
-	private String name;
+	private String id;
 	private UUID uuidString = UUID.randomUUID();
 	
-	String id = uuidString.toString();
+	private String _id = uuidString.toString();
 
-	private AtomicInteger pointCount = new AtomicInteger(0);
+
 
 	private Position position;
 
 	public Point() {
-		this.id = id;
-		this.name = " Annonimus Point "+pointCount;
+		this.id = " Annonimus Point ";
 
 	}
 	
 	public Point(Position position) {
-		this.id = id;
-		this.name = "Point "+pointCount;
+		this.id = "point";
 		this.position = position;
 	}
 	
 
-	public String getId() {
-		return id;
+	public String _getId() {
+		return _id;
 	}
 
 	public String getName() {
-		return name;
+		return id;
 	}
 
 	public Position getPosition() {
