@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import org.vaadin.example.SmplrPolymer.Data.Point;
 import org.vaadin.example.SmplrPolymer.Data.PointEvent;
@@ -47,12 +51,9 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	private double pointelEvation = 0.0;
 
 	private Gson gson = new Gson();
-	
-	Position tempPosition;
 
-//	private Map<Integer, Point> idToPoint = new HashMap<>();
-//
-//	private int nextPointId = 0;
+	String tempClickedPoint;
+	Position tempPosition;
 
 	public SmplrSpace() {
 
@@ -90,14 +91,14 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		pointZ = z;
 		pointLevelIndex = levelIndex;
 		pointelEvation = elevation;
-		
-		Position pos = new Position(elevation, x,z,levelIndex);
+
+		Position pos = new Position(elevation, x, z, levelIndex);
 		tempPosition = pos;
-		
+
 		drawPoint(pos);
 
 		System.out.println("Point is: (" + pointX + ";" + pointZ + ";" + pointLevelIndex + ";" + pointelEvation + ")");
-		
+
 	}
 
 	@ClientCallable
@@ -120,12 +121,9 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		_updatedPosition.setLevelIndex(_newPosLevelIndex);
 		_updatedPosition.setElevation(_newPosElevation);
 
-
 		bindDataToPolymerComponent();
-		
+
 		dispatchPoint("update", id, _updatedPosition);
-		
-		
 
 		System.err.println("ID: " + id);
 		System.err.println("Updates: " + updates);
@@ -154,17 +152,7 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 			Point point = iterator.next();
 			System.out.println(" New Point: (" + point.getPosition().getX() + ")");
 		}
-		
-	}
-	
-	public void drawPoint() {
 
-		drawPoint(tempPosition);
-	}
-
-	public void drawPoint(Position pos) {
-
-		dispatchPoint("add", null, pos);
 	}
 
 	public void addPointData(Position pos) {
@@ -197,6 +185,55 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		return false;
 	}
 
+	@ClientCallable
+	public void getClickedPoint(String _id) {
+		tempClickedPoint = _id;
+		System.err.println("Clicked Point is: " + _id);
+	}
+
+	public boolean removePointByID() {
+
+		if (tempClickedPoint == null) {
+
+			return false;
+
+		} else {
+
+			List<Point> newPoints = points.stream().filter(point -> !point._getId().equals(tempClickedPoint))
+					.collect(Collectors.toList());
+
+			// Update the points list
+			points = newPoints;
+
+			// Send Data to PolytmerElement class
+			bindDataToPolymerComponent();
+
+			// Dispatch the update
+			dispatchPoint("updateView", null, null);
+
+			// Reset the temporary point
+			tempPosition = null;
+
+			return true;
+		}
+
+	}
+
+	/////////////////////////////////////////////////////////
+	public void drawPoint() {
+
+		drawPoint(tempPosition);
+	}
+
+	public void drawPoint(Position pos) {
+
+		dispatchPoint("add", null, pos);
+	}
+
+	public void removePoint() {
+		dispatchPoint("remove", tempClickedPoint, null);
+	}
+
 	/////////////////////////////////////////////////////////
 
 	public void dispatchPoint(String type, String _id, Position newPosition) {
@@ -207,12 +244,72 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		case "update":
 			updatePointPosition(_id, newPosition);
 			break;
-//	        case "remove":
-//	            removePoint(action.getPoint().getId());
-//	            break;
+		case "remove":
+			removePointByID();
+			break;
+		case "updateView":
+			updateView();
+			break;
 		default:
 			System.out.println("Unknown action type " + type);
 		}
+	}
+
+	///////////////////////////////////////////////////////
+	// export to local storage
+	public void exportPointData() {
+		Gson gson = new Gson();
+		String json = gson.toJson(points);
+
+		try (FileWriter file = new FileWriter("C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\TestData\\Data.json")) {
+			/*
+			 * try (FileWriter file = new FileWriter(
+			 * "C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\src\\main\\resources\\TestingData")) {
+			 */
+			file.write(json);
+			System.out.println("Successfully Copied JSON Array to File...");
+			System.out.println("\nJSON Array: " + json);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/////////////////////////////////////////////////////
+	// Upload Data from local Storage
+	public void importPointData() {
+
+		String filePath = "C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\TestData\\Data.json";
+
+		/*
+		 * try (FileReader fileReader = new FileReader(filePath)) {
+		 * 
+		 * SpaceService pointList = gson.fromJson(fileReader, SpaceService.class);
+		 * 
+		 * points = pointList.getPoints();
+		 * 
+		 * bindDataToPolymerComponent();
+		 * 
+		 * System.out.println("File was readed successuflly!");
+		 * 
+		 * } catch (Exception e) { e.printStackTrace(); }
+		 */
+		try (FileReader fileReader = new FileReader(filePath)) {
+			
+	        List<Point> points = gson.fromJson(fileReader, null);
+
+	        SpaceService spaceService = new SpaceService(points);
+	        this.points = spaceService.getPoints();
+
+	        bindDataToPolymerComponent();
+
+	        System.out.println("File was readed successfully!");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+		
+		
+		
 	}
 
 	/////////////////////////////////////////////////////
@@ -220,7 +317,7 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	public void addPointDataJava() {
 		getElement().callJsFunction("addPointDataJava");
 	}
-	
+
 	public void enablePickingMode() {
 		getElement().callJsFunction("enablePickingMode");
 	}
@@ -233,8 +330,6 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		getElement().callJsFunction("startSpaceView");
 	}
 
-//	public void addPoint(List<Point> pt) {
-
 	public void addPoint() {
 		getElement().callJsFunction("addPoint");
 	}
@@ -243,7 +338,7 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		getElement().callJsFunction("addPointDataLayer");
 	}
 
-	public void removePoint() {
+	public void removePointClientSide() {
 		getElement().callJsFunction("removePoint");
 	}
 

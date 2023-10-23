@@ -1,6 +1,7 @@
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { loadSmplrJs } from "@smplrspace/smplr-loader";
 import { Desk, Servers, AC, Departments } from './data001.js';
+//import { consoleStyles } from './cssConsoleStyle.js';
 
 
 class SmplrSpaceContainer extends PolymerElement {
@@ -144,7 +145,8 @@ class SmplrSpaceContainer extends PolymerElement {
 	}
 
 	disconnectedCallback() {
-
+		
+		this.ss.remove();
 
 
 	}
@@ -166,6 +168,10 @@ class SmplrSpaceContainer extends PolymerElement {
 		});
 
 	}
+	
+/*	removeSuccessfully(str){
+		console.log("%c"+str, consoleStyles);
+	}*/
 
 	/////////////////////////////////////////
 	//	addPoint() {
@@ -207,6 +213,7 @@ class SmplrSpaceContainer extends PolymerElement {
 			tooltip: d => d.id,
 			onClick: (data) => {
 				this.tempPoint = data;
+				this.getClickedPoint(data._id);
 			},
 			onDrop: ({ data, position }) => {
 				this.coordinates = position;
@@ -263,20 +270,20 @@ class SmplrSpaceContainer extends PolymerElement {
 		return randomID;
 	}
 
-	//	updatePoint(action) {
-	//		for (let i = 0; i < JSON.parse(this.pointList).length; i++) {
-	//			if (JSON.parse(this.pointList)[i].id === action.id) {
-	//
-	//				JSON.parse(this.pointList)[i].position = action.updates.position;
-	//				this.getClientUpdatedData();
-	//				this.updateView();
-	//				return this.pointList;
-	//
-	//			}
-	//		}
-	//		this.updateView();
-	//		return this.pointList;;
-	//	}
+	/*		updatePoint(action) {
+				for (let i = 0; i < JSON.parse(this.pointList).length; i++) {
+					if (JSON.parse(this.pointList)[i].id === action.id) {
+		
+						JSON.parse(this.pointList)[i].position = action.updates.position;
+						this.getClientUpdatedData();
+						this.updateView();
+						return this.pointList;
+		
+					}
+				}
+				this.updateView();
+				return this.pointList;;
+			}*/
 
 
 
@@ -290,6 +297,7 @@ class SmplrSpaceContainer extends PolymerElement {
 			tooltip: d => d.id,
 			onClick: (data) => {
 				this.tempPoint = data;
+				this.getClickedPoint(data._id);
 				console.log(this.pointList);
 			},
 			onDrop: ({ data, position }) => {
@@ -299,67 +307,61 @@ class SmplrSpaceContainer extends PolymerElement {
 				this.getClientData();
 
 				this.tempPoint = data;
-				///////////////////////////////////////
-				// updatePoint Call dispatchPoint
-				//				this.dispatchPoint({
-				//					type: 'update',
-				//					id: data.id,
-				//					updates: { position }
-				//				});
+
 			}
 		})
 
 	}
 
 
-	removePoint() {
-
-		let newPoints = this.pointList.filter(obj => obj._id !== this.tempPoint._id);
-		console.log("tempPoint " + this.tempPoint);
-		this.pointList = newPoints;
-		console.log("point " + this.tempPoint._id + " was removed successfully");
-		this.tempPoint = [];
-		this.dispatchPoint({
-			type: 'updateView',
-		});
-
-	}
-
+	/*	removePoint() {
+	
+			let newPoints = this.pointList.filter(obj => obj._id !== this.tempPoint._id);
+			console.log("tempPoint " + this.tempPoint);
+			this.pointList = newPoints;
+			console.log("point " + this.tempPoint._id + " was removed successfully");
+			this.tempPoint = [];
+			this.dispatchPoint({
+				type: 'updateView',
+			});
+	
+		}
+	*/
 
 
 	//
-//	addPointDataLayer() {
-//		this.ss.removeDataLayer();
-//		this.ss.addDataLayer({
-//			id: 'point',
-//			type: 'point',
-//			data: this.pointList,
-//			diameter: 0.5,
-//			anchor: 'bottom',
-//			tooltip: d => d.id,
-//			onClick: (data) => {
-//				this.tempPoint = data;
-//			},
-//			onDrop: ({ data, position }) => {
-//				this.coordinates = position;
-//				this.getClientData();
-//
-//				this.dispatchPoint({
-//					type: 'update',
-//					id: data._id,
-//					updates: { position }
-//				});
-//			}
-//		})
-//	}
+	/*	addPointDataLayer() {
+			this.ss.removeDataLayer();
+			this.ss.addDataLayer({
+				id: 'point',
+				type: 'point',
+				data: this.pointList,
+				diameter: 0.5,
+				anchor: 'bottom',
+				tooltip: d => d.id,
+				onClick: (data) => {
+					this.tempPoint = data;
+				},
+				onDrop: ({ data, position }) => {
+					this.coordinates = position;
+					this.getClientData();
+	
+					this.dispatchPoint({
+						type: 'update',
+						id: data._id,
+						updates: { position }
+					});
+				}
+			})
+		}
+	*/
 
 
 
 
 
 
-
-	dispatchPoint(action) {
+	/*dispatchPoint(action) {
 		switch (action.type) {
 			case 'add':
 				this.addPointData(action.point);
@@ -385,7 +387,7 @@ class SmplrSpaceContainer extends PolymerElement {
 			default:
 				console.error(`Unknown action type ${action.type}`)
 		}
-	}
+	}*/
 
 
 
@@ -409,54 +411,56 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	}
 
+	getClickedPoint(_clickedPointID) {
+		this.$server.getClickedPoint(_clickedPointID);
+	}
+
 
 
 
 
 
 	/////////////////////////////////////////////////////////////////
-	//	updateDataLayers() {
-	//		this.ss.removeDataLayer('IT_Room');
-	//
-	//		this.ss.addDataLayer({
-	//			id: "Desk",
-	//			type: 'furniture',
-	//			data: Desk,
-	//			tooltip: (d) => `${d.name} - ${d.Employee == '' ? 'free' : d.Employee}`,
-	//			color: (d) => (d.Employee == '' ? '#f75e56' : '#03fc24'),
-	//		});
-	//
-	//
-	//		this.ss.addDataLayer({
-	//			id: "Servers",
-	//			type: 'furniture',
-	//			data: Servers,
-	//			tooltip: (d) => `${d.name} - ${d.Brand} -${d.temprature}! ${d.temprature > 65 ? 'Hot Temp' : 'Normal Temp'}`,
-	//			color: (d) => `${d.temprature >= 65 ? '#f75e56' : '#50b268'}`,
-	//		});
-	//
-	//		this.ss.addDataLayer({
-	//			id: "AC",
-	//			type: 'furniture',
-	//			data: AC,
-	//			tooltip: (d) => `${d.name} - ${d.Brand}`,
-	//			color: (d) => (d.ON ? '#0398fc' : '#f75e56'),
-	//		});
-	//
-	//		this.ss.addDataLayer({
-	//			id: "Departments",
-	//			type: 'polygon',
-	//			data: Departments,
-	//			baseHeight: 0,
-	//			height: 1.5,
-	//			color: (d) => (d.name == 'CEO' ? '#0398fc' : (d.name == 'Seniors' ? '#5feb63' : '#d15c5c')),
-	//			alpha: 0.5,
-	//			tooltip: (d) => `Dep: ${d.name}`,
-	//		})
+	updateDataLayers() {
+		this.ss.removeDataLayer('IT_Room');
 
-	//    console.log(this.ss.getDataLayer("Departments"));
+		this.ss.addDataLayer({
+			id: "Desk",
+			type: 'furniture',
+			data: Desk,
+			tooltip: (d) => `${d.name} - ${d.Employee == '' ? 'free' : d.Employee}`,
+			color: (d) => (d.Employee == '' ? '#f75e56' : '#03fc24'),
+		});
 
-	//	}
+
+		this.ss.addDataLayer({
+			id: "Servers",
+			type: 'furniture',
+			data: Servers,
+			tooltip: (d) => `${d.name} - ${d.Brand} -${d.temprature}! ${d.temprature > 65 ? 'Hot Temp' : 'Normal Temp'}`,
+			color: (d) => `${d.temprature >= 65 ? '#f75e56' : '#50b268'}`,
+		});
+
+		this.ss.addDataLayer({
+			id: "AC",
+			type: 'furniture',
+			data: AC,
+			tooltip: (d) => `${d.name} - ${d.Brand}`,
+			color: (d) => (d.ON ? '#0398fc' : '#f75e56'),
+		});
+
+		this.ss.addDataLayer({
+			id: "Departments",
+			type: 'polygon',
+			data: Departments,
+			baseHeight: 0,
+			height: 1.5,
+			color: (d) => (d.name == 'CEO' ? '#0398fc' : (d.name == 'Seniors' ? '#5feb63' : '#d15c5c')),
+			alpha: 0.5,
+			tooltip: (d) => `Dep: ${d.name}`,
+		})
+
+	}
 
 
 

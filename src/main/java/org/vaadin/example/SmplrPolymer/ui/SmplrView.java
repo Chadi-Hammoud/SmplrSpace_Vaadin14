@@ -1,5 +1,6 @@
 package org.vaadin.example.SmplrPolymer.ui;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.notification.Notification;
@@ -8,60 +9,65 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
 @Route("SmplrView")
-//Download the Leaflet JS files using NPM
 @NpmPackage(value = "@smplrspace/smplr-loader", version = "2.10.0")
 
 public class SmplrView extends VerticalLayout {
 	private static final long serialVersionUID = -5575582976392893617L;
 
 	public SmplrView() {
-		
-		SmplrSpace space = new SmplrSpace();
 
-//		Button addBtn = new Button("Add Point");
-//		addBtn.addClickListener(event -> {
-//			// This code will be executed when the button is clicked
-//			space.addPoint();
-//			Notification.show("Button clicked! the data will be binded");
-//		});
+		SmplrSpace space = new SmplrSpace();
 
 		Button removeBtn = new Button("Remove Point");
 		removeBtn.addClickListener(event -> {
-			// This code will be executed when the button is clicked
 			space.removePoint();
-			Notification.show("Button clicked! Point will be deleted");
+
+			if (space.removePointByID()) {
+				System.out.println("Point:' " + space.tempClickedPoint + "' was successfully deleted!");
+
+				String script = "console.error('Point was removed Successuflly!');";
+				UI.getCurrent().getPage().executeJs(script);
+			} else {
+				System.err.println("console.error('No Selected Point, Please select one!')");
+				String script = "No Point selected Please select one!";
+				UI.getCurrent().getPage().executeJs(script);
+			}
+
 		});
 		Button disablePickBtn = new Button("Disable pick");
 		disablePickBtn.addClickListener(event -> {
-			// This code will be executed when the button is clicked
 			space.disablePick();
 			Notification.show("Pick Mode will be disabled");
 		});
 
 		Button updateDataLayersBtn = new Button("update Data");
 		updateDataLayersBtn.addClickListener(event -> {
-			// This code will be executed when the button is clicked
 			space.updateDataLayers();
-//			Notification.show("Pick Mode will be disabled");
 		});
 
-		Button addPointDataJavaBtn = new Button("add Point Java");
-		addPointDataJavaBtn.addClickListener(event -> {
-			// This code will be executed when the button is clicked
-			space.drawPoint();
-//			Notification.show("Pick Mode will be disabled");
+		Button exportPointDataBtn = new Button("Export");
+		exportPointDataBtn.addClickListener(event -> {
+			Notification.show("Exporting Data...");
+			space.exportPointData();
+			Notification.show("Exporting Data is completed!");
 		});
-		
+
+		Button importPointDataBtn = new Button("Import");
+		importPointDataBtn.addClickListener(event -> {
+			Notification.show("Importing Data...");
+			space.importPointData();
+			Notification.show("Importing Data is completed!");
+		});
+
 		Button enablePickingModeBtn = new Button("enable Picking Mode");
 		enablePickingModeBtn.addClickListener(event -> {
-			// This code will be executed when the button is clicked
 			space.enablePickingMode();
-//			Notification.show("Pick Mode will be disabled");
 		});
 
 		HorizontalLayout hrz = new HorizontalLayout();
 
-		hrz.add(removeBtn, disablePickBtn, updateDataLayersBtn, addPointDataJavaBtn, enablePickingModeBtn);
+		hrz.add(enablePickingModeBtn, disablePickBtn, removeBtn, updateDataLayersBtn, exportPointDataBtn,
+				importPointDataBtn);
 
 		add(space, hrz);
 	}
