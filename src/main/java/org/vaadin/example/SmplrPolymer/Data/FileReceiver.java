@@ -21,7 +21,6 @@ import com.vaadin.flow.router.Route;
 public class FileReceiver implements Receiver {
 	private byte[] fileBytes;
 
-	@Override
 	public OutputStream receiveUpload(String fileName, String mimeType) {
 	    fileBytes = null; // Initialize the array to null
 	    return new ByteArrayOutputStream() {

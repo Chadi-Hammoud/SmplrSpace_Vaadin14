@@ -1,7 +1,6 @@
 import { html, PolymerElement } from '@polymer/polymer/polymer-element.js';
 import { loadSmplrJs } from "@smplrspace/smplr-loader";
 import { Desk, Servers, AC, Departments } from './data001.js';
-//import { consoleStyles } from './cssConsoleStyle.js';
 
 
 class SmplrSpaceContainer extends PolymerElement {
@@ -28,12 +27,9 @@ class SmplrSpaceContainer extends PolymerElement {
 			tempPoint: {
 				type: Object,
 			},
-
 			coordinates: {
 				elevation: {
 					type: Number,
-					//					notify: true,
-
 				},
 				levelIndex: {
 					type: Number,
@@ -46,7 +42,6 @@ class SmplrSpaceContainer extends PolymerElement {
 					type: Number,
 				},
 			},
-
 			point: {
 				type: Array,
 				id: {
@@ -70,13 +65,9 @@ class SmplrSpaceContainer extends PolymerElement {
 						type: Number,
 					},
 				}
-
 			},
 		}
 	}
-
-
-
 
 	static get template() {
 		return html`
@@ -86,10 +77,7 @@ class SmplrSpaceContainer extends PolymerElement {
 			height: 500px;
 		}
 		</style>
-	
-				<!-- This is the div the Space will be rendered in -->
-				<div id="container"></div>
-	        `;
+		<div id="container"></div>`;
 	}
 
 	_attachDom(dom) {
@@ -108,8 +96,6 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	ready() {
 		super.ready();
-
-
 	}
 
 	connectedCallback() {
@@ -124,38 +110,24 @@ class SmplrSpaceContainer extends PolymerElement {
 
 		loadSmplrJs("umd")
 			.then((smplr) => {
-
 				console.log("smplr" + JSON.stringify(smplr))
-
 				this.ss = new smplr.Space({
 					spaceId: JSON.parse(this.spaceId),
 					clientToken: JSON.parse(this.clientToken),
 					containerId: JSON.parse(this.containerId),
 				});
-
 				console.log("In after the construct: " + this.ss)
-
 				this.startSpaceView();
 
 			});
-
-
-
-
 	}
 
 	disconnectedCallback() {
-		
 		this.ss.remove();
-
-
 	}
 
-
 	callSpace() {
-
-		console.log(this.ss)
-
+		/*console.log(this.ss)*/
 	}
 
 	startSpaceView() {
@@ -168,40 +140,8 @@ class SmplrSpaceContainer extends PolymerElement {
 		});
 
 	}
-	
-/*	removeSuccessfully(str){
-		console.log("%c"+str, consoleStyles);
-	}*/
 
-	/////////////////////////////////////////
-	//	addPoint() {
-	//		this.ss.addDataLayer({
-	//			id: 'point',
-	//			type: 'point',
-	//			data: JSON.parse(this.point),
-	//		});
-	//		console.log(JSON.parse(this.point));
-	//	}
 	///////////////////////////////////////
-
-
-
-	addPointData(pt) {
-
-		//		console.log(pt)
-		//
-		//		try {
-		//			this.pointList.push(pt);
-		//			console.log("point ", pt, " was successfully added to Points");
-		//			console.log(this.pointList)
-		//
-		//			this.addPointDataLayer();
-		//		} catch (error) {
-		//			console.log('point cannot added to the Points array');
-		//		}
-
-	}
-
 
 	addPointDataJava() {
 		this.ss.addDataLayer({
@@ -218,17 +158,7 @@ class SmplrSpaceContainer extends PolymerElement {
 			onDrop: ({ data, position }) => {
 				this.coordinates = position;
 				this.getClientUpdatedData(data._id);
-				//				this.getClientData();
-				//				this.updateView();
-
 				this.tempPoint = data;
-				/////////////////////////////////////
-				//				 updatePoint Call dispatchPoint
-				//				this.dispatchPoint({
-				//					type: 'update',
-				//					id: data.id,
-				//					updates: { position }
-				//				});
 			}
 		})
 	}
@@ -240,26 +170,12 @@ class SmplrSpaceContainer extends PolymerElement {
 		this.ss.disablePickingMode();
 	}
 
-
 	enablePickingMode() {
 		this.ss.enablePickingMode({
 			onPick: ({ coordinates }) => {
-
 				this.coordinates = coordinates;
-				//				this.getClientUpdatedData(data._id);
-
 				this.getClientData();
 
-				//				this.dispatchPoint({
-				//					type: 'add',
-				//					point: {
-				//						id: this.generateSpecificID(),
-				//						namePoint: "point",
-				//						type: 'point',
-				//						position: coordinates,
-				//
-				//					}
-				//				});
 			}
 		})
 	}
@@ -269,23 +185,6 @@ class SmplrSpaceContainer extends PolymerElement {
 		console.log(randomID);
 		return randomID;
 	}
-
-	/*		updatePoint(action) {
-				for (let i = 0; i < JSON.parse(this.pointList).length; i++) {
-					if (JSON.parse(this.pointList)[i].id === action.id) {
-		
-						JSON.parse(this.pointList)[i].position = action.updates.position;
-						this.getClientUpdatedData();
-						this.updateView();
-						return this.pointList;
-		
-					}
-				}
-				this.updateView();
-				return this.pointList;;
-			}*/
-
-
 
 	updateView() {
 		this.ss.updateDataLayer({
@@ -301,19 +200,14 @@ class SmplrSpaceContainer extends PolymerElement {
 				console.log(this.pointList);
 			},
 			onDrop: ({ data, position }) => {
-				///////////////////////////////////////
 				this.coordinates = position;
 				this.getClientUpdatedData(data._id);
 				this.getClientData();
-
 				this.tempPoint = data;
-
 			}
 		})
-
 	}
-	
-	
+
 	importView() {
 		this.ss.addDataLayer({
 			id: "point",
@@ -328,96 +222,13 @@ class SmplrSpaceContainer extends PolymerElement {
 				console.log(this.pointList);
 			},
 			onDrop: ({ data, position }) => {
-				///////////////////////////////////////
 				this.coordinates = position;
 				this.getClientUpdatedData(data._id);
 				this.getClientData();
-
 				this.tempPoint = data;
-
 			}
 		})
-
 	}
-
-
-	/*	removePoint() {
-	
-			let newPoints = this.pointList.filter(obj => obj._id !== this.tempPoint._id);
-			console.log("tempPoint " + this.tempPoint);
-			this.pointList = newPoints;
-			console.log("point " + this.tempPoint._id + " was removed successfully");
-			this.tempPoint = [];
-			this.dispatchPoint({
-				type: 'updateView',
-			});
-	
-		}
-	*/
-
-
-	//
-	/*	addPointDataLayer() {
-			this.ss.removeDataLayer();
-			this.ss.addDataLayer({
-				id: 'point',
-				type: 'point',
-				data: this.pointList,
-				diameter: 0.5,
-				anchor: 'bottom',
-				tooltip: d => d.id,
-				onClick: (data) => {
-					this.tempPoint = data;
-				},
-				onDrop: ({ data, position }) => {
-					this.coordinates = position;
-					this.getClientData();
-	
-					this.dispatchPoint({
-						type: 'update',
-						id: data._id,
-						updates: { position }
-					});
-				}
-			})
-		}
-	*/
-
-
-
-
-
-
-	/*dispatchPoint(action) {
-		switch (action.type) {
-			case 'add':
-				this.addPointData(action.point);
-				break;
-			//   return [...points, action.point]
-			case 'update':
-				this.getClientUpdatedData(action._id, action);
-				//				this.updateView();
-				break;
-			// return points.map(pt =>
-			//     pt.id === action.id ? { ...pt, ...action.updates } : pt
-			// )
-			case 'remove':
-				// return reject(r => r.id === action.id)(points)
-				this.removePoint(tempPoint._id);
-				// removePoint(action.point.id);
-				break;
-
-			case 'updateView':
-				this.getClientUpdatedData(action._id, action);
-				this.addPointDataLayer();
-				break;
-			default:
-				console.error(`Unknown action type ${action.type}`)
-		}
-	}*/
-
-
-
 	/////////////////////////////////////////////////////////////////
 
 	getClientData() {
@@ -430,27 +241,18 @@ class SmplrSpaceContainer extends PolymerElement {
 		let _newCoordinates = this.coordinates;
 		let updates = {
 			id: _pointID,
-			updates: _newCoordinates
+			updates: _newCoordinates,
 		}
 		var jsonData = JSON.stringify(updates);
-
 		this.$server.setClientUpdatedData(jsonData);
-
 	}
 
 	getClickedPoint(_clickedPointID) {
 		this.$server.getClickedPoint(_clickedPointID);
 	}
-
-
-
-
-
-
 	/////////////////////////////////////////////////////////////////
 	updateDataLayers() {
 		this.ss.removeDataLayer('IT_Room');
-
 		this.ss.addDataLayer({
 			id: "Desk",
 			type: 'furniture',
@@ -458,8 +260,6 @@ class SmplrSpaceContainer extends PolymerElement {
 			tooltip: (d) => `${d.name} - ${d.Employee == '' ? 'free' : d.Employee}`,
 			color: (d) => (d.Employee == '' ? '#f75e56' : '#03fc24'),
 		});
-
-
 		this.ss.addDataLayer({
 			id: "Servers",
 			type: 'furniture',
@@ -467,7 +267,6 @@ class SmplrSpaceContainer extends PolymerElement {
 			tooltip: (d) => `${d.name} - ${d.Brand} -${d.temprature}! ${d.temprature > 65 ? 'Hot Temp' : 'Normal Temp'}`,
 			color: (d) => `${d.temprature >= 65 ? '#f75e56' : '#50b268'}`,
 		});
-
 		this.ss.addDataLayer({
 			id: "AC",
 			type: 'furniture',
@@ -475,7 +274,6 @@ class SmplrSpaceContainer extends PolymerElement {
 			tooltip: (d) => `${d.name} - ${d.Brand}`,
 			color: (d) => (d.ON ? '#0398fc' : '#f75e56'),
 		});
-
 		this.ss.addDataLayer({
 			id: "Departments",
 			type: 'polygon',
@@ -486,10 +284,6 @@ class SmplrSpaceContainer extends PolymerElement {
 			alpha: 0.5,
 			tooltip: (d) => `Dep: ${d.name}`,
 		})
-
 	}
-
-
-
 }
 customElements.define(SmplrSpaceContainer.is, SmplrSpaceContainer)

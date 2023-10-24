@@ -316,7 +316,7 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	// Upload Data from local Storage
 	public void importPointData() {
 
-		String filePath = "C:\\\\Chadi Hammoud\\\\SmplrSpace-Vaadin\\\\src\\\\main\\\\resources\\\\TestingData\\\\Exported\\\\Data001.json";
+		String filePath = "C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\src\\\\main\\resources\\TestingData\\Exported\\Data001.json";
 
 		try {
 			String jsonData = new String(Files.readAllBytes(Paths.get(filePath)));
