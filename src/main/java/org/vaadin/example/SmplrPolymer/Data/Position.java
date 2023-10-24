@@ -1,11 +1,15 @@
 package org.vaadin.example.SmplrPolymer.Data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Position {
 
 	private double x;
 	private double z;
 	private double elevation;
-	private int levelIndex;
+	
+	@JsonProperty("levelIndex")
+    private int levelIndex;
 
 	public Position() {
 

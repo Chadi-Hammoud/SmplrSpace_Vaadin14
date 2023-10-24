@@ -1,11 +1,14 @@
 package org.vaadin.example.SmplrPolymer.ui;
 
+import org.vaadin.example.SmplrPolymer.Data.FileReceiver;
+
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.Route;
 
 @Route("SmplrView")
@@ -66,10 +69,30 @@ public class SmplrView extends VerticalLayout {
 
 		HorizontalLayout hrz = new HorizontalLayout();
 
-		hrz.add(enablePickingModeBtn, disablePickBtn, removeBtn, updateDataLayersBtn, exportPointDataBtn,
-				importPointDataBtn);
+		Button JsonExportViewBtn = new Button("Json Export View");
+		JsonExportViewBtn.addClickListener(event -> {
+			Notification.show("Exporting Data...");
+			space.JsonExportView(JsonExportViewBtn);
+			Notification.show("Exporting Data is completed!");
+		});
 
-		add(space, hrz);
+		Upload upload = new Upload(new FileReceiver());
+		upload.setAcceptedFileTypes("application/json");
+		upload.setMaxFiles(1);
+
+		upload.addSucceededListener(event -> {
+			Notification.show("File uploaded successfully!");
+			space.importData();
+		});
+
+		upload.addFailedListener(event -> {
+			Notification.show("File upload failed: " + event.getReason());
+		});
+
+		hrz.add(enablePickingModeBtn, disablePickBtn, removeBtn, updateDataLayersBtn, exportPointDataBtn,
+				importPointDataBtn, JsonExportViewBtn);
+
+		add(space, hrz, upload);
 	}
 
 }

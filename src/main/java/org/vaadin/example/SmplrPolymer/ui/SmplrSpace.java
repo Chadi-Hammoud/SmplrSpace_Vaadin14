@@ -1,31 +1,41 @@
 package org.vaadin.example.SmplrPolymer.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.io.FileReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.vaadin.example.SmplrPolymer.Data.FileReceiver;
+import org.vaadin.example.SmplrPolymer.Data.JsonExportResource;
 import org.vaadin.example.SmplrPolymer.Data.Point;
-import org.vaadin.example.SmplrPolymer.Data.PointEvent;
 import org.vaadin.example.SmplrPolymer.Data.Position;
 import org.vaadin.example.SmplrPolymer.Data.SpaceService;
-import org.vaadin.example.SmplrPolymer.Data.UpdatesPointPosition;
+import org.vaadin.olli.FileDownloadWrapper;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dependency.NpmPackage;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.dom.PropertyChangeEvent;
+import com.vaadin.flow.component.upload.Receiver;
+import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.templatemodel.TemplateModel;
 
 @Route("Space")
@@ -250,6 +260,10 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 		case "updateView":
 			updateView();
 			break;
+
+		case "importView":
+			importView();
+			break;
 		default:
 			System.out.println("Unknown action type " + type);
 		}
@@ -258,58 +272,67 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	///////////////////////////////////////////////////////
 	// export to local storage
 	public void exportPointData() {
-		Gson gson = new Gson();
 		String json = gson.toJson(points);
 
-		try (FileWriter file = new FileWriter("C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\TestData\\Data.json")) {
-			/*
-			 * try (FileWriter file = new FileWriter(
-			 * "C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\src\\main\\resources\\TestingData")) {
-			 */
+		try (FileWriter file = new FileWriter(
+				"C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\src\\main\\resources\\TestingData\\Exported\\Data001.json")) {
 			file.write(json);
 			System.out.println("Successfully Copied JSON Array to File...");
 			System.out.println("\nJSON Array: " + json);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		System.out.println(points.size());
+	}
+
+	/////////////////////////////////////////////////////
+	// Exporting 001
+	public void JsonExportView(Button downloadButton) {
+		String jsonContent = gson.toJson(points);
+		// Create a StreamResource with the dynamically generated JSON content
+		StreamResource resource = new StreamResource("data.json", () -> {
+			byte[] jsonBytes = jsonContent.getBytes();
+			return new ByteArrayInputStream(jsonBytes);
+		});
+
+		// Set the Content-Disposition header to suggest a filename
+		resource.setCacheTime(0); // Disables caching
+		resource.setContentType("application/json");
+
+		// Create a download link
+		Anchor downloadLink = new Anchor(resource, "Download JSON");
+		downloadLink.getElement().setAttribute("download", true);
+
+		downloadLink.getStyle().set("display", "none"); // Hide the link
+		getElement().appendChild(downloadLink.getElement());
+
+		// Trigger a click on the hidden download link
+		downloadLink.getElement().callJsFunction("click");
+
 	}
 
 	/////////////////////////////////////////////////////
 	// Upload Data from local Storage
 	public void importPointData() {
 
-		String filePath = "C:\\Chadi Hammoud\\SmplrSpace-Vaadin\\TestData\\Data.json";
+		String filePath = "C:\\\\Chadi Hammoud\\\\SmplrSpace-Vaadin\\\\src\\\\main\\\\resources\\\\TestingData\\\\Exported\\\\Data001.json";
 
-		/*
-		 * try (FileReader fileReader = new FileReader(filePath)) {
-		 * 
-		 * SpaceService pointList = gson.fromJson(fileReader, SpaceService.class);
-		 * 
-		 * points = pointList.getPoints();
-		 * 
-		 * bindDataToPolymerComponent();
-		 * 
-		 * System.out.println("File was readed successuflly!");
-		 * 
-		 * } catch (Exception e) { e.printStackTrace(); }
-		 */
-		try (FileReader fileReader = new FileReader(filePath)) {
-			
-	        List<Point> points = gson.fromJson(fileReader, null);
+		try {
+			String jsonData = new String(Files.readAllBytes(Paths.get(filePath)));
+			ObjectMapper objectMapper = new ObjectMapper();
+			points = objectMapper.readValue(jsonData, new TypeReference<List<Point>>() {
+			});
+			// You can now work with the parsed data
+			Notification.show("Parsed " + points.size() + " points.");
 
-	        SpaceService spaceService = new SpaceService(points);
-	        this.points = spaceService.getPoints();
+			bindDataToPolymerComponent();
+			importView();
+		} catch (IOException e) {
+			e.printStackTrace();
+			Notification.show("Failed to read and parse the JSON file.");
+		}
 
-	        bindDataToPolymerComponent();
-
-	        System.out.println("File was readed successfully!");
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-
-		
-		
-		
 	}
 
 	/////////////////////////////////////////////////////
@@ -324,6 +347,10 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 
 	public void updateView() {
 		getElement().callJsFunction("updateView");
+	}
+
+	public void importView() {
+		getElement().callJsFunction("importView");
 	}
 
 	public void startView() {
@@ -348,6 +375,26 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 
 	public void updateDataLayers() {
 		getElement().callJsFunction("updateDataLayers");
+	}
+
+	public void importData() {
+		try {
+			InputStream uploadedFile = new FileReceiver().getUploadedFileInputStream();
+			if (uploadedFile != null) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				points = objectMapper.readValue(uploadedFile, new TypeReference<List<Point>>() {
+				});
+				Notification.show("Parsed " + points.size() + " points.");
+
+				bindDataToPolymerComponent();
+				importView();
+			} else {
+				Notification.show("Uploaded file is null.");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			Notification.show("Failed to read and parse the uploaded JSON file.");
+		}
 	}
 
 }

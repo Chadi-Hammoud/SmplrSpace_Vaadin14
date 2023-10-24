@@ -2,27 +2,34 @@ package org.vaadin.example.SmplrPolymer.Data;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Point {
 
+//	private String id;
+//	private UUID uuidString = UUID.randomUUID();
+
+//	private String _id = uuidString.toString();
+
+	@JsonProperty("id")
 	private String id;
-	private UUID uuidString = UUID.randomUUID();
-	
-	private String _id = uuidString.toString();
-
-
-
+	@JsonProperty("uuidString")
+	private String uuidString;
+	@JsonProperty("_id")
+	private String _id = UUID.randomUUID().toString();
 	private Position position;
+
+//	private Position position;
 
 	public Point() {
 		this.id = " Annonimus Point ";
 
 	}
-	
+
 	public Point(Position position) {
 		this.id = "point";
 		this.position = position;
 	}
-	
 
 	public String _getId() {
 		return _id;

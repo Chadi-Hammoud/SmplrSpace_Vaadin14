@@ -289,7 +289,34 @@ class SmplrSpaceContainer extends PolymerElement {
 
 	updateView() {
 		this.ss.updateDataLayer({
-			id: 'point',
+			id: "point",
+			type: 'point',
+			data: JSON.parse(this.pointList),
+			diameter: 0.5,
+			anchor: 'bottom',
+			tooltip: d => d.id,
+			onClick: (data) => {
+				this.tempPoint = data;
+				this.getClickedPoint(data._id);
+				console.log(this.pointList);
+			},
+			onDrop: ({ data, position }) => {
+				///////////////////////////////////////
+				this.coordinates = position;
+				this.getClientUpdatedData(data._id);
+				this.getClientData();
+
+				this.tempPoint = data;
+
+			}
+		})
+
+	}
+	
+	
+	importView() {
+		this.ss.addDataLayer({
+			id: "point",
 			type: 'point',
 			data: JSON.parse(this.pointList),
 			diameter: 0.5,
