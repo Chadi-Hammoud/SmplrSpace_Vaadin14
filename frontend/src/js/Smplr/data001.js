@@ -293,15 +293,15 @@ export const Desk =
 
 export const Servers =
     [
-        {
-            groupName: "Servers",
-            layerType: "furniture",
-            smplrUuid: "88101eec-f707-4048-8674-1433dc5b1d77",
-            name: "Server1",
-            furnitureId: "c9dea97b-392a-4162-abf1-2306e268f662",
-            Brand: "IBM",
-            temprature: 50,
-        },
+//        {
+//            groupName: "Servers",
+//            layerType: "furniture",
+//            smplrUuid: "88101eec-f707-4048-8674-1433dc5b1d77",
+//            name: "Server1",
+//            furnitureId: "c9dea97b-392a-4162-abf1-2306e268f662",
+//            Brand: "IBM",
+//            temprature: 50,
+//        },
     ];
 
 export const AC =

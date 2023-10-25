@@ -228,7 +228,8 @@ class SmplrSpaceContainer extends PolymerElement {
 				this.tempPoint = data;
 			}
 		})
-	}
+	}	
+	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 
 	getClientData() {
@@ -250,6 +251,9 @@ class SmplrSpaceContainer extends PolymerElement {
 	getClickedPoint(_clickedPointID) {
 		this.$server.getClickedPoint(_clickedPointID);
 	}
+	
+	
+	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	updateDataLayers() {
 		this.ss.removeDataLayer('IT_Room');

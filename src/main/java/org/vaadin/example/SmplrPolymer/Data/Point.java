@@ -26,8 +26,12 @@ public class Point {
 
 	}
 
-	public Point(Position position) {
-		this.id = "point";
+//	public Point(Position position) {
+//		this.id = "point";
+//		this.position = position;
+//	}
+	public Point(String type, Position position) {
+		this.id = type;
 		this.position = position;
 	}
 

@@ -22,14 +22,14 @@ public class FileReceiver implements Receiver {
 	private byte[] fileBytes;
 
 	public OutputStream receiveUpload(String fileName, String mimeType) {
-	    fileBytes = null; // Initialize the array to null
-	    return new ByteArrayOutputStream() {
-	        @Override
-	        public void close() throws IOException {
-	            super.close();
-	            fileBytes = toByteArray(); // Set the array to the actual data
-	        }
-	    };
+		fileBytes = null; // Initialize the array to null
+		return new ByteArrayOutputStream() {
+			@Override
+			public void close() throws IOException {
+				super.close();
+				fileBytes = toByteArray(); // Set the array to the actual data
+			}
+		};
 	}
 
 	public InputStream getUploadedFileInputStream() {

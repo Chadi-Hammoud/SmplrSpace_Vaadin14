@@ -1,11 +1,9 @@
 package org.vaadin.example.SmplrPolymer.ui;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,11 +12,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.vaadin.example.SmplrPolymer.Data.FileReceiver;
-import org.vaadin.example.SmplrPolymer.Data.JsonExportResource;
 import org.vaadin.example.SmplrPolymer.Data.Point;
 import org.vaadin.example.SmplrPolymer.Data.Position;
 import org.vaadin.example.SmplrPolymer.Data.SpaceService;
-import org.vaadin.olli.FileDownloadWrapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,8 +28,6 @@ import com.vaadin.flow.component.dependency.NpmPackage;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.component.upload.Receiver;
-import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import com.vaadin.flow.templatemodel.TemplateModel;
@@ -166,7 +160,7 @@ public class SmplrSpace extends PolymerTemplate<TemplateModel> {
 	}
 
 	public void addPointData(Position pos) {
-		Point pt = new Point(pos);
+		Point pt = new Point("point", pos);
 		try {
 			// Check if a point with the same ID already exists
 			if (!pointExists(pt._getId())) {

@@ -1,7 +1,5 @@
 package org.vaadin.example.SmplrPolymer.Data;
 
-import java.util.UUID;
-
 public class UpdatesPointPosition {
 
 	private String ptID;
